@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Warning Dashboard</title>
+
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-box"><i class="fa-solid fa-satellite-dish" style="color:var(--accent)"></i>DISASTER WARNING DASHBOARD</div>
+
+    <nav class="nav-links">
+        <div class="nav-item active" onclick="showPage('page-home',this)">HOME</div>
+        <div class="nav-item" onclick="showPage('page-weather',this)">WEATHER REPORT</div>
+        <div class="nav-item" onclick="showPage('page-analytics',this)">DATA ANALYTICS</div>
+        <div class="nav-item" onclick="showPage('page-rescue',this)">RESCUE OPS</div>
+        <div class="nav-item" onclick="showPage('page-directory',this)">CONTACT</div>
+        <div class="nav-item" onclick="showPage('page-history',this)">DISASTER ARCHIVES</div>
+        <div class="nav-item" onclick="showPage('page-awareness',this)">AWARENESS</div>
+    </nav>
+
+    <span id="live-clock" style="color:var(--warning); font-family: monospace; font-weight: bold;"></span>
+</header>
+
+<div id="page-home" class="page active"></div>
+<div id="page-weather" class="page"></div>
+<div id="page-analytics" class="page"></div>
+<div id="page-rescue" class="page"></div>
+<div id="page-directory" class="page"></div>
+<div id="page-history" class="page"></div>
+<div id="page-awareness" class="page"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
