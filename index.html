@@ -7,14 +7,19 @@
 
     <link rel="icon" type="image/png" href="favicon.png">
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="logo-box"><i class="fa-solid fa-satellite-dish" style="color:var(--accent)"></i>DISASTER WARNING DASHBOARD</div>
+    <div class="logo-box"><i class="fa-solid fa-satellite-dish" style="color:var(--accent)"></i>HYDRO-MET WARNING DASHBOARD</div>
 
     <nav class="nav-links">
         <div class="nav-item active" onclick="showPage('page-home',this)">HOME</div>
@@ -29,7 +34,22 @@
     <span id="live-clock" style="color:var(--warning); font-family: monospace; font-weight: bold;"></span>
 </header>
 
-<div id="page-home" class="page active"></div>
+<div id="page-home" class="page active">
+    <div class="panel">
+        <h3>Threat Watch</h3>
+        <div id="state-list" style="overflow-y: auto; flex: 1;"></div>
+    </div>
+
+    <div class="panel" style="padding:0">
+        <div id="map"></div>
+    </div>
+
+    <div class="panel">
+        <h3>Live Intelligence Feed</h3>
+        <div id="incident-feed" style="overflow-y: auto;"></div>
+    </div>
+</div>
+
 <div id="page-weather" class="page"></div>
 <div id="page-analytics" class="page"></div>
 <div id="page-rescue" class="page"></div>
@@ -37,6 +57,8 @@
 <div id="page-history" class="page"></div>
 <div id="page-awareness" class="page"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
