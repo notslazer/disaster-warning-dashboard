@@ -19,7 +19,7 @@
 <body>
 
 <header>
-    <div class="logo-box"><i class="fa-solid fa-satellite-dish" style="color:var(--accent)"></i>HYDRO-MET WARNING DASHBOARD</div>
+    <div class="logo-box"><i class="fa-solid fa-satellite-dish" style="color:var(--accent)"></i>DISASTER WARNING DASHBOARD</div>
 
     <nav class="nav-links">
         <div class="nav-item active" onclick="showPage('page-home',this)">HOME</div>
@@ -50,7 +50,27 @@
     </div>
 </div>
 
-<div id="page-weather" class="page"></div>
+<div id="page-weather" class="page">
+    <div class="panel">
+        <h3>National Meteorological Forecast</h3>
+        <table class="dir-table" id="weatherForecastTable">
+            <thead>
+                <tr>
+                    <th>State/UT</th>
+                    <th>Temp (°C)</th>
+                    <th>Rain %</th>
+                    <th>Wind Speed</th>
+                    <th>Wind Pattern</th>
+                    <th>Humidity</th>
+                    <th>Visibility</th>
+                    <th>AQI</th>
+                </tr>
+            </thead>
+            <tbody id="weather-body"></tbody>
+        </table>
+    </div>
+</div>
+
 <div id="page-analytics" class="page"></div>
 <div id="page-rescue" class="page"></div>
 <div id="page-directory" class="page"></div>
