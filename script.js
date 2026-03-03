@@ -10,7 +10,10 @@ function showPage(pageId, el) {
     document.getElementById(pageId).classList.add('active');
     el.classList.add('active');
     
+    // Refresh map sizing when returning to Home
     if(pageId === 'page-home') setTimeout(() => map.invalidateSize(), 200);
+    // Initialize charts only when the Analytics page is visited for the first time
+    if(pageId === 'page-analytics') initCharts();
 }
 
 // ---------------- MAP INITIALIZATION & BOUNDS ----------------
@@ -39,10 +42,9 @@ const stateCoordinates = {
     "Gujarat": [22.2587, 71.1924]
 };
 
-// COMMIT 3: Weather Data Array
 const weatherData = [
-    { name: "Andhra Pradesh", temp: 21, rain: 15, wind: "14 km/h", pattern: "Easterly", hum: "60%", vis: "8km", aqi: 72 },
-    { name: "Arunachal Pradesh", temp: 19, rain: 45, wind: "10 km/h", pattern: "Mountain Breeze", hum: "80%", vis: "4km", aqi: 32 },
+    { name: "Andhra Pradesh", temp: 31, rain: 15, wind: "14 km/h", pattern: "Easterly", hum: "60%", vis: "8km", aqi: 72 },
+    { name: "Arunachal Pradesh", temp: 18, rain: 45, wind: "10 km/h", pattern: "Mountain Breeze", hum: "80%", vis: "4km", aqi: 32 },
     { name: "Assam", temp: 24, rain: 88, wind: "18 km/h", pattern: "NE Monsoon", hum: "92%", vis: "2km", aqi: 48 },
     { name: "Bihar", temp: 26, rain: 10, wind: "8 km/h", pattern: "Variable", hum: "65%", vis: "5km", aqi: 195 },
     { name: "Chhattisgarh", temp: 29, rain: 5, wind: "12 km/h", pattern: "Calm", hum: "55%", vis: "7km", aqi: 110 },
@@ -89,21 +91,15 @@ states.forEach(stateName => {
     }
 });
 
-// COMMIT 3: Function to generate table rows dynamically
 function populateWeatherTable() {
     const tableBody = document.getElementById('weather-body');
     if(!tableBody) return;
     tableBody.innerHTML = ''; 
-    
-    // Sort states alphabetically
     const sortedData = [...weatherData].sort((a, b) => a.name.localeCompare(b.name));
     
     sortedData.forEach(s => {
-        // Determine pill color based on AQI value
         let aqiClass = s.aqi <= 100 ? 'aqi-good' : (s.aqi <= 200 ? 'aqi-mod' : 'aqi-poor');
-        // Highlight high rain percentages in red
         let rainColor = s.rain > 50 ? 'var(--danger)' : 'white';
-        
         tableBody.innerHTML += `
             <tr>
                 <td><b>${s.name}</b></td>
@@ -118,9 +114,7 @@ function populateWeatherTable() {
     });
 }
 
-// Unified function to populate all UI elements when the page loads
 function populateUI() {
-    // Populate Home Page Elements
     const list = document.getElementById('state-list');
     const feed = document.getElementById('incident-feed');
 
@@ -134,8 +128,67 @@ function populateUI() {
         <div class="state-card" style="border-left-color:var(--warning)"><b>ALERT:</b> High tide and storm surge warning issued for coastal districts.</div>
     `;
 
-    // Populate Weather Page Elements
     populateWeatherTable();
 }
 
 window.onload = populateUI;
+
+// ---------------- COMMIT 4: CHART INITIALIZATION ----------------
+let chartsCreated = false;
+
+function initCharts() {
+    // Prevent charts from drawing multiple times if the user clicks back and forth
+    if(chartsCreated) return;
+    chartsCreated = true;
+
+    // A helper to quickly scaffold charts with our custom threshold lines
+    const createChartWithThreshold = (id, type, labels, datasetLabel, data, color, thresholdValue, thresholdText) => {
+        new Chart(document.getElementById(id), {
+            type: type,
+            data: { 
+                labels: labels, 
+                datasets: [{ 
+                    label: datasetLabel, 
+                    data: data, 
+                    borderColor: type === 'line' ? color : undefined, 
+                    backgroundColor: type === 'bar' ? color : undefined, 
+                    tension: 0.4 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            dangerLine: {
+                                type: 'line',
+                                yMin: thresholdValue,
+                                yMax: thresholdValue,
+                                borderColor: 'rgba(239, 68, 68, 0.8)', 
+                                borderWidth: 2,
+                                borderDash: [6, 6], 
+                                label: {
+                                    display: true,
+                                    content: thresholdText,
+                                    position: 'start',
+                                    backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                                    color: 'white',
+                                    font: { size: 11, family: 'Inter' }
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+        });
+    };
+
+    // Draw all 5 analytics charts
+    createChartWithThreshold('windChart', 'line', ['10:00', '12:00', '14:00', '16:00', '18:00'], 'km/h', [45, 55, 78, 82, 75], '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
+    createChartWithThreshold('riverChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu'], 'Meters', [5.2, 6.8, 8.4, 8.1], '#38bdf8', 7.5, 'Danger Mark (7.5m)');
+    createChartWithThreshold('floodChart', 'bar', ['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'Depth (m)', [0.8, 1.7, 1.2, 0.5], '#ef4444', 1.0, 'Evacuation Level (1.0m)');
+    createChartWithThreshold('pressureChart', 'line', ['06:00', '09:00', '12:00', '15:00'], 'hPa', [1005, 998, 986, 992], '#10b981', 990, 'Severe Storm (<990 hPa)');
+    createChartWithThreshold('stormChart', 'bar', ['East Coast', 'West Coast', 'Andaman'], 'Height (m)', [3.2, 1.1, 2.5], '#38bdf8', 2.0, 'Coastal Threat (2.0m)');
+}

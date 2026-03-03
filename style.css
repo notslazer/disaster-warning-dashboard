@@ -51,13 +51,17 @@ header {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-/* COMMIT 3: TABLE UI */
+/* WEATHER PAGE SPECIFICS */
 .dir-table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 12px; overflow: hidden; }
 .dir-table th, .dir-table td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 .dir-table th { background: rgba(255,255,255,0.05); color: var(--accent); text-transform: uppercase; font-size: 0.75rem; }
 
-/* COMMIT 3: Weather Specific Pills   */
 .aqi-pill { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
 .aqi-good { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
 .aqi-mod { background: rgba(251, 191, 36, 0.1); color: var(--warning); border: 1px solid var(--warning); }
 .aqi-poor { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+/* COMMIT 4: ANALYTICS PAGE SPECIFICS */
+#page-analytics { grid-template-columns: 1fr 1fr; }
+.analytics-stats { grid-column: span 2; display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+.chart-container { background: var(--panel); border-radius: 16px; padding: 20px; border: 1px solid var(--border); height: 320px; position: relative; }
