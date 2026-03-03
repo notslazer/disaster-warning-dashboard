@@ -71,7 +71,22 @@
     </div>
 </div>
 
-<div id="page-analytics" class="page"></div>
+<div id="page-analytics" class="page">
+    <div class="analytics-stats">
+        <div class="panel"><h4>Wind Speed</h4><h2 style="color:var(--warning)">82 km/h</h2></div>
+        <div class="panel"><h4>River Level</h4><h2 style="color:var(--accent)">8.4 m</h2></div>
+        <div class="panel"><h4>Flood Depth</h4><h2 style="color:var(--danger)">1.7 m</h2></div>
+        <div class="panel"><h4>Pressure</h4><h2 style="color:var(--success)">986 hPa</h2></div>
+        <div class="panel"><h4>Storm Surge</h4><h2 style="color:var(--danger)">3.2 m</h2></div>
+    </div>
+
+    <div class="chart-container"><h3>Wind Speed Trend</h3><canvas id="windChart"></canvas></div>
+    <div class="chart-container"><h3>River Level Monitoring</h3><canvas id="riverChart"></canvas></div>
+    <div class="chart-container"><h3>Flood Depth Trend</h3><canvas id="floodChart"></canvas></div>
+    <div class="chart-container"><h3>Pressure Variation</h3><canvas id="pressureChart"></canvas></div>
+    <div class="chart-container" style="grid-column: span 2;"><h3>Storm Surge (Coastal Analysis)</h3><canvas id="stormChart"></canvas></div>
+</div>
+
 <div id="page-rescue" class="page"></div>
 <div id="page-directory" class="page"></div>
 <div id="page-history" class="page"></div>
@@ -80,6 +95,5 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
 
-
 </body>
-</html>  
+</html>
