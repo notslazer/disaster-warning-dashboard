@@ -41,8 +41,8 @@ const stateCoordinates = {
 
 // COMMIT 3: Weather Data Array
 const weatherData = [
-    { name: "Andhra Pradesh", temp: 31, rain: 15, wind: "14 km/h", pattern: "Easterly", hum: "60%", vis: "8km", aqi: 72 },
-    { name: "Arunachal Pradesh", temp: 18, rain: 45, wind: "10 km/h", pattern: "Mountain Breeze", hum: "80%", vis: "4km", aqi: 32 },
+    { name: "Andhra Pradesh", temp: 21, rain: 15, wind: "14 km/h", pattern: "Easterly", hum: "60%", vis: "8km", aqi: 72 },
+    { name: "Arunachal Pradesh", temp: 19, rain: 45, wind: "10 km/h", pattern: "Mountain Breeze", hum: "80%", vis: "4km", aqi: 32 },
     { name: "Assam", temp: 24, rain: 88, wind: "18 km/h", pattern: "NE Monsoon", hum: "92%", vis: "2km", aqi: 48 },
     { name: "Bihar", temp: 26, rain: 10, wind: "8 km/h", pattern: "Variable", hum: "65%", vis: "5km", aqi: 195 },
     { name: "Chhattisgarh", temp: 29, rain: 5, wind: "12 km/h", pattern: "Calm", hum: "55%", vis: "7km", aqi: 110 },
