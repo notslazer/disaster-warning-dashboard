@@ -72,13 +72,52 @@ const weatherData = [
     { name: "Delhi (NCT)", temp: 28, rain: 2, wind: "12 km/h", pattern: "Westerly", hum: "40%", vis: "1.5km", aqi: 340 }
 ];
 
-// COMMIT 5: Rescue Data Array
 const zonalRescueData = [
     { zone: "North India", teams: 12, evacuated: "1,200", camps: 15, assets: 12, risk: "Medium" },
     { zone: "South India", teams: 8, evacuated: "4,500", camps: 28, assets: 18, risk: "High" },
     { zone: "East India", teams: 15, evacuated: "6,100", camps: 32, assets: 24, risk: "Critical" },
     { zone: "West India", teams: 4, evacuated: "450", camps: 5, assets: 6, risk: "Low" },
     { zone: "Central India", teams: 3, evacuated: "230", camps: 5, assets: 4, risk: "Low" }
+];
+
+// COMMIT 6: Contact Directory Data
+const allStateContacts = [
+    ["Andhra Pradesh","+91-8662410978"],
+    ["Arunachal Pradesh","+91-3602212299"],
+    ["Assam","+91-3612237219"],
+    ["Bihar","+91-6122294204"],
+    ["Chhattisgarh","+91-7712223471"],
+    ["Goa","+91-8322428494"],
+    ["Gujarat","+91-7923251900"],
+    ["Haryana","+91-1722719396"],
+    ["Himachal Pradesh","+91-1772629439"],
+    ["Jharkhand","+91-6512490036"],
+    ["Karnataka","+91-8022340676"],
+    ["Kerala","+91-4712364424"],
+    ["Madhya Pradesh","+91-7552550351"],
+    ["Maharashtra","+91-2222027990"],
+    ["Manipur","+91-3852451550"],
+    ["Meghalaya","+91-3642502094"],
+    ["Mizoram","+91-3892317145"],
+    ["Nagaland","+91-3702291120"],
+    ["Odisha","+91-6742395398"],
+    ["Punjab","+91-1722741803"],
+    ["Rajasthan","+91-1412225624"],
+    ["Sikkim","+91-3592202233"],
+    ["Tamil Nadu","+91-4428593990"],
+    ["Telangana","+91-4023454045"],
+    ["Tripura","+91-3812416040"],
+    ["Uttar Pradesh","+91-5222239415"],
+    ["Uttarakhand","+91-1352710334"],
+    ["West Bengal","+91-3322143526"],
+    ["Andaman & Nicobar","+91-3192232102"],
+    ["Chandigarh","+91-1722741803"],
+    ["Dadra & Nagar Haveli and Daman & Diu","+91-2602230636"],
+    ["Delhi (NCT)","+91-1123379181"],
+    ["Jammu & Kashmir","+91-1912474159"],
+    ["Ladakh","+91-1982252095"],
+    ["Lakshadweep","+91-4896262256"],
+    ["Puducherry","+91-4132201256"]
 ];
 
 const warningIcon = L.divIcon({
@@ -139,13 +178,11 @@ function populateUI() {
     // 2. Populate Weather Page
     populateWeatherTable();
 
-    // 3. COMMIT 5: Populate Rescue Ops Page
+    // 3. Populate Rescue Ops Page
     const rescueTable = document.getElementById('rescue-zonal-body');
    
     zonalRescueData.forEach(z => {
-        // Color code the risk status text
         const rColor = z.risk === 'Critical' ? 'var(--danger)' : (z.risk === 'High' ? 'var(--warning)' : 'var(--success)');
-       
         rescueTable.innerHTML += `
             <tr>
                 <td><b>${z.zone}</b></td>
@@ -164,6 +201,27 @@ function populateUI() {
     document.getElementById('comms-status').innerHTML = `
         <div class="state-card"><b>HAM Radio:</b> Operational in North Zone.</div>
         <div class="state-card" style="border-left-color:var(--danger)"><b>Sat-Link:</b> Intermittent in East Zone.</div>`;
+
+    // 4. COMMIT 6: Populate Directory with Offline Status logic
+    const directoryTable = document.getElementById('directory-body');
+   
+    // States that are currently facing communication blackouts
+    const offlineStates = ["Odisha", "West Bengal", "Andaman & Nicobar", "Assam"];
+
+    allStateContacts.forEach(s => {
+        const stateName = s[0];
+        const isOffline = offlineStates.includes(stateName);
+       
+        const statusText = isOffline ? "OFFLINE" : "ONLINE";
+        const statusColor = isOffline ? "var(--danger)" : "var(--success)";
+       
+        directoryTable.innerHTML += `
+            <tr>
+                <td>${stateName}</td>
+                <td>${s[1]}</td>
+                <td style="color:${statusColor}; font-weight:bold;">${statusText}</td>
+            </tr>`;
+    });
 }
 
 window.onload = populateUI;
