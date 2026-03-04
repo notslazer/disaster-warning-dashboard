@@ -9,10 +9,10 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+   
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-    
+   
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -87,7 +87,36 @@
     <div class="chart-container" style="grid-column: span 2;"><h3>Storm Surge (Coastal Analysis)</h3><canvas id="stormChart"></canvas></div>
 </div>
 
-<div id="page-rescue" class="page"></div>
+<div id="page-rescue" class="page">
+    <div class="panel">
+        <h3><i class="fa-solid fa-map-location-dot"></i> Zonal Rescue Intelligence Matrix</h3>
+        <table class="dir-table">
+            <thead>
+                <tr>
+                    <th>Zone (India)</th>
+                    <th>Active Teams (NDRF)</th>
+                    <th>Evacuated (72h)</th>
+                    <th>Relief Camps</th>
+                    <th>Boats + Helis</th>
+                    <th>Risk Status</th>
+                </tr>
+            </thead>
+            <tbody id="rescue-zonal-body"></tbody>
+        </table>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div class="panel">
+            <h3>Active Supply Drops</h3>
+            <div id="supply-feed"></div>
+        </div>
+        <div class="panel">
+            <h3>Field Comms Status</h3>
+            <div id="comms-status"></div>
+        </div>
+    </div>
+</div>
+
 <div id="page-directory" class="page"></div>
 <div id="page-history" class="page"></div>
 <div id="page-awareness" class="page"></div>

@@ -9,16 +9,14 @@ function showPage(pageId, el) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
     el.classList.add('active');
-    
-    // Refresh map sizing when returning to Home
+   
     if(pageId === 'page-home') setTimeout(() => map.invalidateSize(), 200);
-    // Initialize charts only when the Analytics page is visited for the first time
     if(pageId === 'page-analytics') initCharts();
 }
 
 // ---------------- MAP INITIALIZATION & BOUNDS ----------------
 const indiaBounds = [
-    [6.5546079, 68.1113787], 
+    [6.5546079, 68.1113787],
     [35.6745457, 97.395561]  
 ];
 
@@ -74,6 +72,15 @@ const weatherData = [
     { name: "Delhi (NCT)", temp: 28, rain: 2, wind: "12 km/h", pattern: "Westerly", hum: "40%", vis: "1.5km", aqi: 340 }
 ];
 
+// COMMIT 5: Rescue Data Array
+const zonalRescueData = [
+    { zone: "North India", teams: 12, evacuated: "1,200", camps: 15, assets: 12, risk: "Medium" },
+    { zone: "South India", teams: 8, evacuated: "4,500", camps: 28, assets: 18, risk: "High" },
+    { zone: "East India", teams: 15, evacuated: "6,100", camps: 32, assets: 24, risk: "Critical" },
+    { zone: "West India", teams: 4, evacuated: "450", camps: 5, assets: 6, risk: "Low" },
+    { zone: "Central India", teams: 3, evacuated: "230", camps: 5, assets: 4, risk: "Low" }
+];
+
 const warningIcon = L.divIcon({
     html: '<i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #ef4444; font-size: 24px; filter: drop-shadow(0px 0px 8px rgba(239, 68, 68, 0.8));"></i>',
     className: 'custom-warning-icon',
@@ -94,9 +101,9 @@ states.forEach(stateName => {
 function populateWeatherTable() {
     const tableBody = document.getElementById('weather-body');
     if(!tableBody) return;
-    tableBody.innerHTML = ''; 
+    tableBody.innerHTML = '';
     const sortedData = [...weatherData].sort((a, b) => a.name.localeCompare(b.name));
-    
+   
     sortedData.forEach(s => {
         let aqiClass = s.aqi <= 100 ? 'aqi-good' : (s.aqi <= 200 ? 'aqi-mod' : 'aqi-poor');
         let rainColor = s.rain > 50 ? 'var(--danger)' : 'white';
@@ -115,6 +122,7 @@ function populateWeatherTable() {
 }
 
 function populateUI() {
+    // 1. Populate Home Page
     const list = document.getElementById('state-list');
     const feed = document.getElementById('incident-feed');
 
@@ -125,40 +133,65 @@ function populateUI() {
     feed.innerHTML = `
         <div class="state-card" style="border-left-color:var(--danger)"><b>URGENT:</b> Severe Cyclonic Storm approaching coast within 24hrs.</div>
         <div class="state-card"><b>NOTICE:</b> Brahmaputra water levels rising rapidly at Dibrugarh.</div>
-        <div class="state-card" style="border-left-color:var(--warning)"><b>ALERT:</b> High tide and storm surge warning issued for coastal districts.</div>
+        <div class="state-card" style="border-left-color:var(--warning)"><b>ALRT:</b> High tide and storm surge warning issued for coastal districts.</div>
     `;
 
+    // 2. Populate Weather Page
     populateWeatherTable();
+
+    // 3. COMMIT 5: Populate Rescue Ops Page
+    const rescueTable = document.getElementById('rescue-zonal-body');
+   
+    zonalRescueData.forEach(z => {
+        // Color code the risk status text
+        const rColor = z.risk === 'Critical' ? 'var(--danger)' : (z.risk === 'High' ? 'var(--warning)' : 'var(--success)');
+       
+        rescueTable.innerHTML += `
+            <tr>
+                <td><b>${z.zone}</b></td>
+                <td>${z.teams} Teams</td>
+                <td>${z.evacuated}</td>
+                <td>${z.camps}</td>
+                <td>${z.assets} Units</td>
+                <td style="color:${rColor}; font-weight:700;">${z.risk}</td>
+            </tr>`;
+    });
+
+    document.getElementById('supply-feed').innerHTML = `
+        <div class="state-card"><b>Air Drop:</b> Life-rafts and medicine kits dropped in flooded zones.</div>
+        <div class="state-card"><b>Ground:</b> 5,000 Food packets delivered to cyclone shelters.</div>`;
+   
+    document.getElementById('comms-status').innerHTML = `
+        <div class="state-card"><b>HAM Radio:</b> Operational in North Zone.</div>
+        <div class="state-card" style="border-left-color:var(--danger)"><b>Sat-Link:</b> Intermittent in East Zone.</div>`;
 }
 
 window.onload = populateUI;
 
-// ---------------- COMMIT 4: CHART INITIALIZATION ----------------
+// ---------------- CHART INITIALIZATION ----------------
 let chartsCreated = false;
 
 function initCharts() {
-    // Prevent charts from drawing multiple times if the user clicks back and forth
     if(chartsCreated) return;
     chartsCreated = true;
 
-    // A helper to quickly scaffold charts with our custom threshold lines
     const createChartWithThreshold = (id, type, labels, datasetLabel, data, color, thresholdValue, thresholdText) => {
         new Chart(document.getElementById(id), {
             type: type,
-            data: { 
-                labels: labels, 
-                datasets: [{ 
-                    label: datasetLabel, 
-                    data: data, 
-                    borderColor: type === 'line' ? color : undefined, 
-                    backgroundColor: type === 'bar' ? color : undefined, 
-                    tension: 0.4 
-                }] 
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: datasetLabel,
+                    data: data,
+                    borderColor: type === 'line' ? color : undefined,
+                    backgroundColor: type === 'bar' ? color : undefined,
+                    tension: 0.4
+                }]
             },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { 
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
                     legend: { display: false },
                     annotation: {
                         annotations: {
@@ -166,9 +199,9 @@ function initCharts() {
                                 type: 'line',
                                 yMin: thresholdValue,
                                 yMax: thresholdValue,
-                                borderColor: 'rgba(239, 68, 68, 0.8)', 
+                                borderColor: 'rgba(239, 68, 68, 0.8)',
                                 borderWidth: 2,
-                                borderDash: [6, 6], 
+                                borderDash: [6, 6],
                                 label: {
                                     display: true,
                                     content: thresholdText,
@@ -180,12 +213,11 @@ function initCharts() {
                             }
                         }
                     }
-                } 
+                }
             }
         });
     };
 
-    // Draw all 5 analytics charts
     createChartWithThreshold('windChart', 'line', ['10:00', '12:00', '14:00', '16:00', '18:00'], 'km/h', [45, 55, 78, 82, 75], '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
     createChartWithThreshold('riverChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu'], 'Meters', [5.2, 6.8, 8.4, 8.1], '#38bdf8', 7.5, 'Danger Mark (7.5m)');
     createChartWithThreshold('floodChart', 'bar', ['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'Depth (m)', [0.8, 1.7, 1.2, 0.5], '#ef4444', 1.0, 'Evacuation Level (1.0m)');
