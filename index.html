@@ -9,10 +9,10 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-   
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -134,7 +134,19 @@
 </div>
 
 <div id="page-history" class="page"></div>
-<div id="page-awareness" class="page"></div>
+
+<div id="disaster-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 id="modal-title" style="color: white; margin-bottom: 5px;"></h2>
+        <span id="modal-year" class="year-pill" style="display: inline-block; margin-bottom: 15px;"></span>
+        <p id="modal-desc" style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
+        
+        <h4 style="color: var(--accent); margin-bottom: 15px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">Recorded Meteorological Data</h4>
+        <div id="modal-stats" class="modal-stats-grid">
+            </div>
+    </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
