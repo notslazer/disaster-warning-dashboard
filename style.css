@@ -79,6 +79,23 @@ header {
 .stat-box span { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 4px; }
 .stat-box b { color: var(--accent); }
 
+/* COMMIT 8: AWARENESS PAGE SPECIFICS */
+#page-awareness { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-content: start; }
+.awareness-card { 
+    background: linear-gradient(145deg, #1e293b, #0f172a); 
+    border-radius: 20px; padding: 25px; border: 1px solid var(--border);
+    transition: transform 0.3s ease; display: flex; flex-direction: column;
+}
+.awareness-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+.awareness-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; }
+.awareness-card h4 { font-size: 1.2rem; margin-bottom: 15px; color: var(--warning); text-transform: uppercase; }
+.awareness-section { margin-bottom: 15px; }
+.awareness-section h5 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.awareness-card ul { list-style: none; font-size: 0.85rem; color: #cbd5e1; }
+.awareness-card li { margin-bottom: 6px; padding-left: 15px; position: relative; line-height: 1.4; }
+.awareness-card li::before { content: "→"; position: absolute; left: 0; color: var(--accent); }
+
+/* COMMIT 9: MODAL STYLING */
 .history-card { cursor: pointer; } /* Make cards look clickable */
 
 .modal-overlay {

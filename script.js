@@ -207,7 +207,7 @@ function populateUI() {
     const list = document.getElementById('state-list');
     const feed = document.getElementById('incident-feed');
     states.forEach(s => { list.innerHTML += `<div class="state-card"><b>${s}</b>: Severe Alert Protocol Active</div>`; });
-    feed.innerHTML = `<div class="state-card" style="border-left-color:var(--danger)"><b>URGENT:</b> Severe Cyclonic Storm approaching coast within 24hrs.</div><div class="state-card"><b>NOTICE:</b> Brahmaputra water levels rising rapidly at Dibrugarh.</div><div class="state-card" style="border-left-color:var(--warning)"><b>ALRT:</b> High tide and storm surge warning issued for coastal districts.</div>`;
+    feed.innerHTML = `<div class="state-card" style="border-left-color:var(--danger)"><b>URGENT:</b> Severe Cyclonic Storm approaching coast within 24hrs.</div><div class="state-card"><b>NOTICE:</b> Brahmaputra water levels rising rapidly at Dibrugarh.</div><div class="state-card" style="border-left-color:var(--warning)"><b>ALERT:</b> High tide and storm surge warning issued for coastal districts.</div>`;
 
     // 2. Weather Page
     const tableBody = document.getElementById('weather-body');
