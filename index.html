@@ -53,6 +53,13 @@
 <div id="page-weather" class="page">
     <div class="panel">
         <h3>National Meteorological Forecast</h3>
+        <div class="panel" style="margin-bottom: 15px; padding: 10px 18px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--accent);"></i>
+                <input type="text" id="weatherSearch" placeholder="Search State or City (e.g. Mumbai, Delhi, Kerala...)" 
+                    style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem;">
+            </div>
+        </div>
         <table class="dir-table" id="weatherForecastTable">
             <thead>
                 <tr>
@@ -267,6 +274,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
+
+
 
 </body>
 </html>
