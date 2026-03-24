@@ -1,4 +1,4 @@
-// ---------------- 1. DATA: STATES & 50 CITIES (CORE) ----------------
+// ---------------- 1. DATA: STATES & COORDINATES ----------------
 const statesUTs = {
     "Andhra Pradesh": [15.91, 79.74], "Arunachal Pradesh": [28.21, 94.72], "Assam": [26.20, 92.93],
     "Bihar": [25.09, 85.31], "Chhattisgarh": [21.27, 81.86], "Goa": [15.29, 74.12],
@@ -35,7 +35,7 @@ const majorCities = {
     "Gurgaon": [28.45, 77.02]
 };
 
-// ---------------- 2. CLOCK & NAVIGATION ----------------
+// ---------------- 2. ENGINES ----------------
 setInterval(() => {
     document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-IN');
 }, 1000);
@@ -49,7 +49,7 @@ function showPage(pageId, el) {
     if(pageId === 'page-analytics') initCharts();
 }
 
-// ---------------- 3. MAP (ORIGINAL) ----------------
+// ---------------- 3. MAP ----------------
 const indiaBounds = [ [6.55, 68.1], [35.67, 97.4] ];
 const map = L.map('map', { zoomControl: false, maxBounds: indiaBounds, maxBoundsViscosity: 1.0, minZoom: 4 }).setView([20.5937, 78.9629], 5);
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
@@ -62,10 +62,35 @@ states.forEach(s => {
     L.marker(stateCoordinates[s], { icon }).addTo(map).bindPopup(`<b>${s}</b><br>Severe Alert Active`);
 });
 
-// ---------------- 4. WEATHER & SEARCH LOGIC ----------------
+// ---------------- 4. SEARCH ENGINES ----------------
+function filterWeatherTable() {
+    const input = document.getElementById('weatherSearch');
+    const filter = input.value.toUpperCase();
+    const rows = document.querySelectorAll('.weather-row');
+    const headers = document.querySelectorAll('.group-header');
+    rows.forEach(row => {
+        const textValue = row.querySelector('.location-name').textContent || row.querySelector('.location-name').innerText;
+        row.style.display = (textValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+    });
+    headers.forEach(h => h.style.display = (filter === "") ? "" : "none");
+}
+
+function filterContactTable() {
+    const input = document.getElementById('contactSearch');
+    if(!input) return;
+    const filter = input.value.toUpperCase();
+    const rows = document.querySelectorAll('.contact-row');
+    rows.forEach(row => {
+        const textValue = row.querySelector('.contact-state-name').textContent || row.querySelector('.contact-state-name').innerText;
+        row.style.display = (textValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+    });
+}
+
+// ---------------- 5. LIVE WEATHER API ----------------
 async function fetchLiveWeather() {
     const tableBody = document.getElementById('weather-body');
-    tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px;">Establishing Real-Time Satellite & Air Quality Link...</td></tr>';
+    if(!tableBody) return;
+    tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px;">Establishing Real-Time Satellite Link...</td></tr>';
     
     const getWindPattern = (deg) => {
         const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
@@ -110,21 +135,7 @@ async function fetchLiveWeather() {
     tableBody.innerHTML = statesHTML + citiesHTML;
 }
 
-function filterWeatherTable() {
-    const input = document.getElementById('weatherSearch');
-    const filter = input.value.toUpperCase();
-    const rows = document.querySelectorAll('.weather-row');
-    const headers = document.querySelectorAll('.group-header');
-
-    rows.forEach(row => {
-        const textValue = row.querySelector('.location-name').textContent || row.querySelector('.location-name').innerText;
-        row.style.display = (textValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
-    });
-
-    headers.forEach(h => h.style.display = (filter === "") ? "" : "none");
-}
-
-// ---------------- 5. FULLY RESTORED ORIGINAL STATIC DATA ----------------
+// ---------------- 6. DATA MODELS ----------------
 const zonalRescueData = [
     { zone: "North India", teams: 12, evacuated: "1,200", camps: 15, assets: 12, risk: "Medium" },
     { zone: "South India", teams: 8, evacuated: "4,500", camps: 28, assets: 18, risk: "High" },
@@ -134,66 +145,168 @@ const zonalRescueData = [
 ];
 
 const allStateContacts = [
-    ["Andhra Pradesh","+91-8662410978"], ["Arunachal Pradesh","+91-3602212299"], ["Assam","+91-3612237219"], ["Bihar","+91-6122294204"],
-    ["Chhattisgarh","+91-7712223471"], ["Goa","+91-8322428494"], ["Gujarat","+91-7923251900"], ["Haryana","+91-1722719396"],
-    ["Himachal Pradesh","+91-1772629439"], ["Jharkhand","+91-6512490036"], ["Karnataka","+91-8022340676"], ["Kerala","+91-4712364424"],
-    ["Madhya Pradesh","+91-7552550351"], ["Maharashtra","+91-2222027990"], ["Manipur","+91-3852451550"], ["Meghalaya","+91-3642502094"],
-    ["Mizoram","+91-3892317145"], ["Nagaland","+91-3702291120"], ["Odisha","+91-6742395398"], ["Punjab","+91-1722741803"],
-    ["Rajasthan","+91-1412225624"], ["Sikkim","+91-3592202233"], ["Tamil Nadu","+91-4428593990"], ["Telangana","+91-4023454045"],
-    ["Tripura","+91-3812416040"], ["Uttar Pradesh","+91-5222239415"], ["Uttarakhand","+91-1352710334"], ["West Bengal","+91-3322143526"],
-    ["Andaman & Nicobar","+91-3192232102"], ["Chandigarh","+91-1722741803"], ["D&N Haveli and Daman & Diu","+91-2602230636"],
-    ["Delhi (NCT)","+91-1123379181"], ["Jammu & Kashmir","+91-1912474159"], ["Ladakh","+91-1982252095"], ["Lakshadweep","+91-4896262256"], ["Puducherry","+91-4132201256"]
+    ["Andhra Pradesh", "08645-246600", "https://apsdma.ap.gov.in"], ["Arunachal Pradesh", "0360-2290346", "https://sdma-arunachal.in"],
+    ["Assam", "0361-2237219", "https://asdma.assam.gov.in"], ["Bihar", "0612-2294204", "https://disastermgmt.bihar.gov.in"],
+    ["Chhattisgarh", "0771-2223471", "https://revenue.cg.nic.in/CGSDMA/"], ["Goa", "0832-2419550", "https://sdma.goa.gov.in"],
+    ["Gujarat", "079-23251900", "https://gsdma.org"], ["Haryana", "0172-2545938", "https://revenueharyana.gov.in/disaster-management/"],
+    ["Himachal Pradesh", "0177-2628940", "https://hpsdma.nic.in"], ["Jharkhand", "0651-2446923", "https://jharkhand.mygov.in/group/department-home-jail-and-disaster-management"],
+    ["Karnataka", "080-22340676", "https://ksndmc.org"], ["Kerala", "0471-2778800", "https://sdma.kerala.gov.in"],
+    ["Madhya Pradesh", "0755-2441419", "https://mpsdma.mp.gov.in"], ["Maharashtra", "022-22027990", "https://maharashtrasdma.gov.in"],
+    ["Manipur", "0385-2443441", "https://manipur.gov.in/disaster-management/"], ["Meghalaya", "0364-2502098", "https://msdma.gov.in"],
+    ["Mizoram", "0389-2342520", "https://dmr.mizoram.gov.in"], ["Nagaland", "0370-2291122", "https://nsdma.nagaland.gov.in"],
+    ["Odisha", "0674-2534177", "https://osdma.org"], ["Punjab", "0172-2749901", "https://punjab.gov.in/department/revenue-rehabilitation-disaster-management/"],
+    ["Rajasthan", "0141-2227084", "https://rajasthan.gov.in/department/disaster-management-relief-civil-defence/"],
+    ["Sikkim", "03592-201145", "https://sikkim.gov.in/departments/disaster-management-department"],
+    ["Tamil Nadu", "044-28593990", "https://tnsdma.tn.gov.in"], ["Telangana", "040-23454088", "https://tsdma.telangana.gov.in"],
+    ["Tripura", "0381-2416045", "https://tdma.tripura.gov.in"], ["Uttar Pradesh", "0522-2235083", "https://rahat.up.nic.in"],
+    ["Uttarakhand", "0135-2710334", "https://usdma.uk.gov.in"], ["West Bengal", "033-22143526", "https://wbdmd.gov.in"],
+    ["Andaman & Nicobar", "03192-238880", "https://nicobars.andaman.nic.in/disaster-management-authority/"],
+    ["Chandigarh", "0172-2704048", "https://chandigarhdistrict.nic.in/departments/disaster-management/"],
+    ["Dadra & Nagar Haveli", "0260-2642106", "https://dnh.nic.in/disaster-management/"],
+    ["Delhi (NCT)", "011-23831077", "https://delhi.gov.in/department/ddma"],
+    ["Jammu & Kashmir", "0191-2542001", "https://jkeoc.in"],
+    ["Ladakh", "01982-260887", "https://ldma.ladakh.gov.in/"],
+    ["Lakshadweep", "04896-263100", "https://lakshadweep.gov.in/disaster-management/"],
+    ["Puducherry", "0413-2253407", "https://psdma.py.gov.in/"]
 ];
 
 const disasterArchiveData = [
-    { id: "tsunami-2004", title: "Indian Ocean Tsunami", year: "2004", icon: "fa-water", desc: "A massive undersea megathrust earthquake off the coast of Sumatra triggered devastating tsunamis across the Indian Ocean, severely impacting coastal India.", summaryArea: "TN, AP, Kerala, A&N Islands", summaryMetric: { label: "Wave Height", value: "Up to 30m", color: "var(--danger)" }, details: [{ label: "Max Wave Height", value: "30 m" }, { label: "Inundation", value: "Up to 3 km" }, { label: "Trigger Earthquake", value: "9.1 - 9.3 Mw" }, { label: "Sea Level Anomaly", value: "+15 m average" }] },
-    { id: "floods-2013", title: "North India Floods", year: "2013", icon: "fa-cloud-showers-water", desc: "A multi-day cloudburst centered on Uttarakhand caused devastating floods and landslides, becoming the country's worst natural disaster since the 2004 tsunami.", summaryArea: "Uttarakhand, Himachal", summaryMetric: { label: "Primary Cause", value: "Cloudburst", color: "var(--warning)" }, details: [{ label: "Rainfall Anomaly", value: "+375% above avg" }, { label: "River Level Surge", value: "+15 m (Mandakini)" }, { label: "Landslide Events", value: "Over 2,000" }] },
-    { id: "cyclone-1999", title: "Odisha Super Cyclone", year: "1999", icon: "fa-hurricane", desc: "The most intense recorded tropical cyclone in the North Indian Ocean and among the most destructive, bringing massive storm surges and winds.", summaryArea: "Odisha Coast", summaryMetric: { label: "Wind Speed", value: "260 km/h", color: "var(--danger)" }, details: [{ label: "Max Wind Speed", value: "260 km/h" }, { label: "Lowest Pressure", value: "912 hPa" }, { label: "Storm Surge Height", value: "8 meters" }] },
-    { id: "mumbai-2005", title: "Maharashtra Floods", year: "2005", icon: "fa-house-flood-water", desc: "Unprecedented extreme rainfall caused severe urban flooding, with Mumbai receiving exactly 944 mm of rain within a 24-hour period, paralyzing the city.", summaryArea: "Mumbai, Maharashtra", summaryMetric: { label: "Primary Cause", value: "Extreme Rainfall", color: "var(--warning)" }, details: [{ label: "24-Hr Rainfall", value: "944 mm" }, { label: "High Tide Level", value: "4.48 meters" }] },
-    { id: "amphan-2020", title: "Cyclone Amphan", year: "2020", icon: "fa-tornado", desc: "Catastrophic tropical cyclone that caused widespread damage in Eastern India and Bangladesh amid the COVID-19 pandemic lockdowns.", summaryArea: "West Bengal, Odisha", summaryMetric: { label: "Category", value: "Super Cyclone", color: "var(--warning)" }, details: [{ label: "Max Wind Speed", value: "260 km/h" }, { label: "Lowest Pressure", value: "920 hPa" }] }
+    {
+        id: "tsunami-2004",
+        title: "Indian Ocean Tsunami",
+        year: "2004",
+        icon: "fa-water",
+        desc: "A massive undersea megathrust earthquake off the coast of Sumatra triggered devastating tsunamis across the Indian Ocean, severely impacting coastal India.",
+        summaryArea: "TN, AP, Kerala, A&N Islands",
+        summaryMetric: { label: "Wave Height", value: "Up to 30m", color: "var(--danger)" },
+        details: [
+            { label: "Max Wave Height", value: "30 m" },
+            { label: "Inland Inundation", value: "Up to 3 km" },
+            { label: "Trigger Earthquake", value: "9.1 - 9.3 Mw" },
+            { label: "Sea Level Anomaly", value: "+15 m average" }
+        ]
+    },
+    {
+        id: "floods-2013",
+        title: "North India Floods",
+        year: "2013",
+        icon: "fa-cloud-showers-water",
+        desc: "A multi-day cloudburst centered on Uttarakhand caused devastating floods and landslides, becoming the country's worst natural disaster since the 2004 tsunami.",
+        summaryArea: "Uttarakhand, Himachal",
+        summaryMetric: { label: "Primary Cause", value: "Cloudburst", color: "var(--warning)" },
+        details: [
+            { label: "Rainfall Anomaly", value: "+375% above avg" },
+            { label: "River Level Surge", value: "+15 m (Mandakini)" },
+            { label: "Landslide Events", value: "Over 2,000" },
+            { label: "Flash Flood Speed", value: "High Velocity" }
+        ]
+    },
+    {
+        id: "cyclone-1999",
+        title: "Odisha Super Cyclone",
+        year: "1999",
+        icon: "fa-hurricane",
+        desc: "The most intense recorded tropical cyclone in the North Indian Ocean and among the most destructive, bringing massive storm surges and winds.",
+        summaryArea: "Odisha Coast",
+        summaryMetric: { label: "Wind Speed", value: "260 km/h", color: "var(--danger)" },
+        details: [
+            { label: "Max Wind Speed", value: "260 km/h" },
+            { label: "Lowest Pressure", value: "912 hPa" },
+            { label: "Storm Surge Height", value: "8 meters" },
+            { label: "Rainfall Volume", value: "1000 mm (in 3 days)" }
+        ]
+    },
+    {
+        id: "mumbai-2005",
+        title: "Maharashtra Floods",
+        year: "2005",
+        icon: "fa-house-flood-water",
+        desc: "Unprecedented extreme rainfall caused severe urban flooding, with Mumbai receiving exactly 944 mm of rain within a 24-hour period, paralyzing the city.",
+        summaryArea: "Mumbai, Maharashtra",
+        summaryMetric: { label: "Primary Cause", value: "Extreme Rainfall", color: "var(--warning)" },
+        details: [
+            { label: "24-Hr Rainfall", value: "944 mm" },
+            { label: "High Tide Level", value: "4.48 meters" },
+            { label: "River Level (Mithi)", value: "Overtopped banks" },
+            { label: "Drainage Capacity", value: "Exceeded by 400%" }
+        ]
+    },
+    {
+        id: "amphan-2020",
+        title: "Cyclone Amphan",
+        year: "2020",
+        icon: "fa-tornado",
+        desc: "A powerful and catastrophic tropical cyclone that caused widespread damage in Eastern India and Bangladesh amid the COVID-19 pandemic lockdowns.",
+        summaryArea: "West Bengal, Odisha",
+        summaryMetric: { label: "Category", value: "Super Cyclonic Storm", color: "var(--warning)" },
+        details: [
+            { label: "Max Wind Speed", value: "260 km/h" },
+            { label: "Lowest Pressure", value: "920 hPa" },
+            { label: "Storm Surge", value: "5 meters" },
+            { label: "Max Rainfall", value: "240 mm (Kolkata)" }
+        ]
+    }
 ];
 
-// ---------------- 6. UI POPULATION ----------------
+// ---------------- 7. UI POPULATION ----------------
 function populateUI() {
-    // HOME ALERT FEED
     const list = document.getElementById('state-list');
     const feed = document.getElementById('incident-feed');
     states.forEach(s => { list.innerHTML += `<div class="state-card"><b>${s}</b>: Severe Alert Protocol Active</div>`; });
-    feed.innerHTML = `<div class="state-card" style="border-left-color:var(--danger)"><b>URGENT:</b> Severe Cyclonic Storm approaching coast within 24hrs.</div><div class="state-card"><b>NOTICE:</b> Brahmaputra water levels rising rapidly at Dibrugarh.</div><div class="state-card" style="border-left-color:var(--warning)"><b>ALERT:</b> High tide and storm surge warning issued for coastal districts.</div>`;
+    feed.innerHTML = `<div class="state-card" style="border-left-color:var(--danger)"><b>URGENT:</b> Severe Cyclonic Storm approaching coast within 24hrs.</div><div class="state-card"><b>NOTICE:</b> Brahmaputra water levels rising rapidly.</div>`;
 
-    // RESCUE PAGE (CORE TABLE)
+    // RESTORED: Rescue Ops Page
     const rescueTable = document.getElementById('rescue-zonal-body');
-    zonalRescueData.forEach(z => {
-        const rColor = z.risk === 'Critical' ? 'var(--danger)' : (z.risk === 'High' ? 'var(--warning)' : 'var(--success)');
-        rescueTable.innerHTML += `<tr><td><b>${z.zone}</b></td><td>${z.teams} Teams</td><td>${z.evacuated}</td><td>${z.camps}</td><td>${z.assets} Units</td><td style="color:${rColor}; font-weight:700;">${z.risk}</td></tr>`;
-    });
+    if(rescueTable) {
+        rescueTable.innerHTML = '';
+        zonalRescueData.forEach(z => {
+            const rColor = z.risk === 'Critical' ? 'var(--danger)' : (z.risk === 'High' ? 'var(--warning)' : 'var(--success)');
+            rescueTable.innerHTML += `<tr><td><b>${z.zone}</b></td><td>${z.teams} Teams</td><td>${z.evacuated}</td><td>${z.camps}</td><td>${z.assets} Units</td><td style="color:${rColor}; font-weight:700;">${z.risk}</td></tr>`;
+        });
+    }
+    document.getElementById('supply-feed').innerHTML = `<div class="state-card"><b>Air Drop:</b> Life-rafts and medicine kits dropped in flooded zones.</div><div class="state-card"><b>Ground:</b> 5,000 Food packets delivered.</div>`;
+    document.getElementById('comms-status').innerHTML = `<div class="state-card"><b>HAM Radio:</b> Operational in North Zone.</div><div class="state-card" style="border-left-color:var(--danger)"><b>Sat-Link:</b> Intermittent.</div>`;
 
-    // RESTORED: SUPPLY DROP & COMMS STATUS
-    document.getElementById('supply-feed').innerHTML = `<div class="state-card"><b>Air Drop:</b> Life-rafts and medicine kits dropped in flooded zones.</div><div class="state-card"><b>Ground:</b> 5,000 Food packets delivered to cyclone shelters.</div>`;
-    document.getElementById('comms-status').innerHTML = `<div class="state-card"><b>HAM Radio:</b> Operational in North Zone.</div><div class="state-card" style="border-left-color:var(--danger)"><b>Sat-Link:</b> Intermittent in East Zone.</div>`;
-
-    // DIRECTORY PAGE
+    // Symmetrical Contact Directory
     const directoryTable = document.getElementById('directory-body');
-    const offlineStates = ["Odisha", "West Bengal", "Andaman & Nicobar", "Assam"];
-    allStateContacts.forEach(s => {
-        const isOffline = offlineStates.includes(s[0]);
-        directoryTable.innerHTML += `<tr><td>${s[0]}</td><td>${s[1]}</td><td style="color:${isOffline ? "var(--danger)" : "var(--success)"}; font-weight:bold;">${isOffline ? "OFFLINE" : "ONLINE"}</td></tr>`;
-    });
+    if(directoryTable) {
+        directoryTable.innerHTML = ''; 
+        allStateContacts.forEach(s => {
+            directoryTable.innerHTML += `
+                <tr class="contact-row">
+                    <td class="contact-state-name"><b>${s[0]}</b></td>
+                    <td>${s[1]}</td>
+                    <td><a href="${s[2]}" target="_blank" rel="noopener noreferrer" class="portal-btn">OFFICIAL PORTAL <i class="fa-solid fa-arrow-up-right-from-square"></i></a></td>
+                </tr>`;
+        });
+    }
 
-    // ARCHIVES PAGE
+    // RESTORED: Archives
     const historyContainer = document.getElementById('page-history');
-    disasterArchiveData.forEach(d => {
-        historyContainer.innerHTML += `<div class="history-card" onclick="openModal('${d.id}')"><div class="history-header"><div><div class="history-title"><i class="fa-solid ${d.icon}" style="color:var(--accent); margin-right:5px;"></i> ${d.title}</div></div><span class="year-pill">${d.year}</span></div><p class="history-desc">${d.desc}</p><div class="history-stats"><div class="stat-box"><span>Affected Areas</span> <b>${d.summaryArea}</b></div><div class="stat-box"><span>${d.summaryMetric.label}</span> <b style="color:${d.summaryMetric.color}">${d.summaryMetric.value}</b></div></div></div>`;
-    });
+    if (historyContainer) {
+        historyContainer.innerHTML = '';
+        disasterArchiveData.forEach(d => {
+            historyContainer.innerHTML += `
+                <div class="history-card" onclick="openModal('${d.id}')">
+                    <div class="history-header">
+                        <div><div class="history-title"><i class="fa-solid ${d.icon}" style="color:var(--accent); margin-right:5px;"></i> ${d.title}</div></div>
+                        <span class="year-pill">${d.year}</span>
+                    </div>
+                    <p class="history-desc">${d.desc}</p>
+                    <div class="history-stats">
+                        <div class="stat-box"><span>Affected Areas</span> <b>${d.summaryArea}</b></div>
+                        <div class="stat-box"><span>${d.summaryMetric.label}</span> <b style="color:${d.summaryMetric.color}">${d.summaryMetric.value}</b></div>
+                    </div>
+                </div>`;
+        });
+    }
 
     fetchLiveWeather();
-    
-    // ATTACH SEARCH LISTENER
-    const searchInput = document.getElementById('weatherSearch');
-    if(searchInput) searchInput.addEventListener('keyup', filterWeatherTable);
+    if(document.getElementById('weatherSearch')) document.getElementById('weatherSearch').addEventListener('keyup', filterWeatherTable);
+    if(document.getElementById('contactSearch')) document.getElementById('contactSearch').addEventListener('keyup', filterContactTable);
 }
 
-// ---------------- 7. MODALS & CHARTS ----------------
+// ---------------- 8. MODALS & CHARTS (ORIGINAL) ----------------
 function openModal(id) {
     const data = disasterArchiveData.find(d => d.id === id);
     if(!data) return;
@@ -210,19 +323,29 @@ window.onclick = (e) => { if (e.target.id === 'disaster-modal') closeModal(); };
 
 let chartsCreated = false;
 function initCharts() {
-    if(chartsCreated) return;
-    chartsCreated = true;
-    const createChartWithThreshold = (id, type, labels, datasetLabel, data, color, thresholdValue, thresholdText) => {
+    if(chartsCreated) return; chartsCreated = true;
+    const createC = (id, type, labels, label, data, color, threshold, text) => {
         new Chart(document.getElementById(id), {
             type: type,
-            data: { labels: labels, datasets: [{ label: datasetLabel, data: data, borderColor: type === 'line' ? color : undefined, backgroundColor: type === 'bar' ? color : undefined, tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, annotation: { annotations: { dangerLine: { type: 'line', yMin: thresholdValue, yMax: thresholdValue, borderColor: 'rgba(239, 68, 68, 0.8)', borderWidth: 2, borderDash: [6, 6], label: { display: true, content: thresholdText, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.9)', color: 'white', font: { size: 11, family: 'Inter' } } } } } } }
+            data: { labels, datasets: [{ label, data, borderColor: color, backgroundColor: color, tension: 0.4 }] },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { display: false }, 
+                    annotation: { annotations: { dangerLine: { 
+                        type: 'line', yMin: threshold, yMax: threshold, 
+                        borderColor: 'rgba(239, 68, 68, 0.8)', borderWidth: 2, borderDash: [6, 6], 
+                        label: { display: true, content: text, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.9)', color: 'white' } 
+                    } } } 
+                } 
+            }
         });
     };
-    createChartWithThreshold('windChart', 'line', ['10:00', '12:00', '14:00', '16:00', '18:00'], 'km/h', [45, 55, 78, 82, 75], '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
-    createChartWithThreshold('riverChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu'], 'Meters', [5.2, 6.8, 8.4, 8.1], '#38bdf8', 7.5, 'Danger Mark (7.5m)');
-    createChartWithThreshold('floodChart', 'bar', ['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'Depth (m)', [0.8, 1.7, 1.2, 0.5], '#ef4444', 1.0, 'Evacuation Level (1.0m)');
-    createChartWithThreshold('pressureChart', 'line', ['06:00', '09:00', '12:00', '15:00'], 'hPa', [1005, 998, 986, 992], '#10b981', 990, 'Severe Storm (<990 hPa)');
-    createChartWithThreshold('stormChart', 'bar', ['East Coast', 'West Coast', 'Andaman'], 'Height (m)', [3.2, 1.1, 2.5], '#38bdf8', 2.0, 'Coastal Threat (2.0m)');
+    createC('windChart', 'line', ['10:00', '12:00', '14:00', '16:00', '18:00'], 'km/h', [45, 55, 78, 82, 75], '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
+    createC('riverChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu'], 'Meters', [5.2, 6.8, 8.4, 8.1], '#38bdf8', 7.5, 'Danger Mark (7.5m)');
+    createC('floodChart', 'bar', ['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'Depth (m)', [0.8, 1.7, 1.2, 0.5], '#ef4444', 1.0, 'Evacuation Level (1.0m)');
+    createC('pressureChart', 'line', ['06:00', '09:00', '12:00', '15:00'], 'hPa', [1005, 998, 986, 992], '#10b981', 990, 'Severe Storm (<990 hPa)');
+    createC('stormChart', 'bar', ['East Coast', 'West Coast', 'Andaman'], 'Height (m)', [3.2, 1.1, 2.5], '#38bdf8', 2.0, 'Coastal Threat (2.0m)');
 }
+
 window.onload = populateUI;
