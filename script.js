@@ -94,7 +94,7 @@ async function fetchLiveWeather() {
     const tableBody = document.getElementById('weather-body');
     if(!tableBody) return;
     tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 40px;">Establishing Real-Time Satellite Link...</td></tr>';
-   
+    
     const getWindPattern = (deg) => {
         const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
         return dirs[Math.round(deg / 45) % 8];
@@ -519,5 +519,32 @@ function openModal(id) {
 }
 function closeModal() { document.getElementById('disaster-modal').classList.remove('active'); }
 window.onclick = (e) => { if (e.target.id === 'disaster-modal') closeModal(); };
+
+let chartsCreated = false;
+function initCharts() {
+    if(chartsCreated) return; chartsCreated = true;
+    const createC = (id, type, labels, label, data, color, threshold, text) => {
+        new Chart(document.getElementById(id), {
+            type: type,
+            data: { labels, datasets: [{ label, data, borderColor: color, backgroundColor: color, tension: 0.4 }] },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { 
+                    legend: { display: false }, 
+                    annotation: { annotations: { dangerLine: { 
+                        type: 'line', yMin: threshold, yMax: threshold, 
+                        borderColor: 'rgba(239, 68, 68, 0.8)', borderWidth: 2, borderDash: [6, 6], 
+                        label: { display: true, content: text, position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.9)', color: 'white' } 
+                    } } } 
+                } 
+            }
+        });
+    };
+    createC('windChart', 'line', ['10:00', '12:00', '14:00', '16:00', '18:00'], 'km/h', [45, 55, 78, 82, 75], '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
+    createC('riverChart', 'line', ['Mon', 'Tue', 'Wed', 'Thu'], 'Meters', [5.2, 6.8, 8.4, 8.1], '#38bdf8', 7.5, 'Danger Mark (7.5m)');
+    createC('floodChart', 'bar', ['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'Depth (m)', [0.8, 1.7, 1.2, 0.5], '#ef4444', 1.0, 'Evacuation Level (1.0m)');
+    createC('pressureChart', 'line', ['06:00', '09:00', '12:00', '15:00'], 'hPa', [1005, 998, 986, 992], '#10b981', 990, 'Severe Storm (<990 hPa)');
+    createC('stormChart', 'bar', ['East Coast', 'West Coast', 'Andaman'], 'Height (m)', [3.2, 1.1, 2.5], '#38bdf8', 2.0, 'Coastal Threat (2.0m)');
+}
 
 window.onload = populateUI;
