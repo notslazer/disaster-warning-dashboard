@@ -56,7 +56,7 @@
         <div class="panel" style="margin-bottom: 15px; padding: 10px 18px;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--accent);"></i>
-                <input type="text" id="weatherSearch" placeholder="Search State or City (e.g. Mumbai, Delhi, Kerala...)" 
+                <input type="text" id="weatherSearch" placeholder="Search State or City (e.g. Chennai, Delhi, Kerala...)" 
                     style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem;">
             </div>
         </div>
@@ -79,12 +79,53 @@
 </div>
 
 <div id="page-analytics" class="page">
-    <div class="analytics-stats">
-        <div class="panel"><h4>Wind Speed</h4><h2 style="color:var(--warning)">82 km/h</h2></div>
-        <div class="panel"><h4>River Level</h4><h2 style="color:var(--accent)">8.4 m</h2></div>
-        <div class="panel"><h4>Flood Depth</h4><h2 style="color:var(--danger)">1.7 m</h2></div>
-        <div class="panel"><h4>Pressure</h4><h2 style="color:var(--success)">986 hPa</h2></div>
-        <div class="panel"><h4>Storm Surge</h4><h2 style="color:var(--danger)">3.2 m</h2></div>
+
+    <!-- State Selector -->
+    <div class="panel analytics-selector-panel" style="grid-column: span 2; flex-direction: row; align-items: center; gap: 20px; padding: 16px 24px;">
+        <i class="fa-solid fa-location-dot" style="color: var(--accent); font-size: 1.2rem;"></i>
+        <label style="color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; white-space: nowrap;">Select State / Region</label>
+        <select id="analyticsStateSelect" onchange="loadAnalyticsForState()" style="
+            background: rgba(56,189,248,0.08);
+            border: 1px solid var(--accent);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            flex: 1;
+            max-width: 380px;
+            font-family: 'Inter', sans-serif;
+        ">
+            <option value="" disabled selected>-- Choose a State or UT --</option>
+        </select>
+        <div id="analytics-loading" style="display:none; align-items:center; gap:8px; color: var(--warning); font-size:0.85rem;">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Fetching Live Data...
+        </div>
+        <div id="analytics-location-label" style="color:#94a3b8; font-size:0.8rem; margin-left:auto;"></div>
+    </div>
+
+    <div class="analytics-stats" style="grid-column: span 2;">
+        <div class="panel">
+            <h4>Wind Speed</h4>
+            <h2 id="stat-wind" style="color:var(--warning)">-- km/h</h2>
+        </div>
+        <div class="panel">
+            <h4>River Level</h4>
+            <h2 id="stat-river" style="color:var(--accent)">-- m</h2>
+        </div>
+        <div class="panel">
+            <h4>Flood Depth</h4>
+            <h2 id="stat-flood" style="color:var(--danger)">-- m</h2>
+        </div>
+        <div class="panel">
+            <h4>Pressure</h4>
+            <h2 id="stat-pressure" style="color:var(--success)">-- hPa</h2>
+        </div>
+        <div class="panel">
+            <h4>Storm Surge</h4>
+            <h2 id="stat-surge" style="color:var(--danger)">-- m</h2>
+        </div>
     </div>
 
     <div class="chart-container"><h3>Wind Speed Trend</h3><canvas id="windChart"></canvas></div>
@@ -126,16 +167,22 @@
 
 <div id="page-directory" class="page">
     <div class="panel">
-        <h3>Emergency Contact Directory (National & State)</h3>
-        <table class="dir-table">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3>Emergency Contact Directory</h3>
+            <input type="text" id="contactSearch" placeholder="Search State or Region..." 
+                style="background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
+                        padding: 10px 20px; border-radius: 8px; color: white; width: 300px; outline: none;">
+        </div>
+        <table class="dir-table" id="directory-table">
             <thead>
                 <tr>
                     <th>State / Region</th>
                     <th>Direct Contact</th>
-                    <th>Status</th>
+                    <th class="text-right">Official Portal</th>
                 </tr>
             </thead>
-            <tbody id="directory-body"></tbody>
+            <tbody id="directory-body">
+                </tbody>
         </table>
     </div>
 </div>
