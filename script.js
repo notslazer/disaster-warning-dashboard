@@ -15,23 +15,23 @@ const statesUTs = {
 };
 
 const majorCities = {
-    "Mumbai": [19.07, 72.87], "Bengaluru": [12.97, 77.59], "Hyderabad": [17.38, 78.48], 
-    "Ahmedabad": [23.02, 72.57], "Chennai": [13.08, 80.27], "Kolkata": [22.57, 88.36], 
-    "Surat": [21.17, 72.83], "Pune": [18.52, 73.85], "Jaipur": [26.91, 75.78], 
-    "Lucknow": [26.84, 80.94], "Kanpur": [26.44, 80.33], "Nagpur": [21.14, 79.08], 
-    "Indore": [22.71, 75.85], "Thane": [19.21, 72.97], "Bhopal": [23.25, 77.41], 
-    "Visakhapatnam": [17.68, 83.21], "Pimpri-Chinchwad": [18.62, 73.79], "Patna": [25.59, 85.13], 
-    "Vadodara": [22.30, 73.18], "Ghaziabad": [28.66, 77.45], "Ludhiana": [30.90, 75.85], 
-    "Agra": [27.17, 78.00], "Nashik": [19.99, 73.78], "Faridabad": [28.40, 77.31], 
-    "Meerut": [28.98, 77.70], "Rajkot": [22.30, 70.80], "Kalyan-Dombivli": [19.23, 73.12], 
-    "Vasai-Virar": [19.39, 72.83], "Varanasi": [25.31, 82.97], "Srinagar": [34.08, 74.79], 
-    "Aurangabad": [19.87, 75.34], "Dhanbad": [23.79, 86.43], "Amritsar": [31.63, 74.87], 
-    "Navi Mumbai": [19.03, 73.02], "Allahabad": [25.43, 81.84], "Ranchi": [23.34, 85.30], 
-    "Howrah": [22.59, 88.26], "Coimbatore": [11.01, 76.95], "Jabalpur": [23.18, 79.98], 
-    "Gwalior": [26.21, 78.17], "Vijayawada": [16.50, 80.64], "Jodhpur": [26.23, 73.02], 
-    "Madurai": [9.92, 78.11], "Raipur": [21.25, 81.62], "Kota": [25.21, 75.86], 
-    "Guwahati": [26.14, 91.73], "Solapur": [17.65, 75.90], "Hubli-Dharwad": [15.36, 75.12], 
-    "Bareilly": [28.36, 79.43], "Mysore": [12.29, 76.63], "Tiruchirappalli": [10.79, 78.70], 
+    "Mumbai": [19.07, 72.87], "Bengaluru": [12.97, 77.59], "Hyderabad": [17.38, 78.48],
+    "Ahmedabad": [23.02, 72.57], "Chennai": [13.08, 80.27], "Kolkata": [22.57, 88.36],
+    "Surat": [21.17, 72.83], "Pune": [18.52, 73.85], "Jaipur": [26.91, 75.78],
+    "Lucknow": [26.84, 80.94], "Kanpur": [26.44, 80.33], "Nagpur": [21.14, 79.08],
+    "Indore": [22.71, 75.85], "Thane": [19.21, 72.97], "Bhopal": [23.25, 77.41],
+    "Visakhapatnam": [17.68, 83.21], "Pimpri-Chinchwad": [18.62, 73.79], "Patna": [25.59, 85.13],
+    "Vadodara": [22.30, 73.18], "Ghaziabad": [28.66, 77.45], "Ludhiana": [30.90, 75.85],
+    "Agra": [27.17, 78.00], "Nashik": [19.99, 73.78], "Faridabad": [28.40, 77.31],
+    "Meerut": [28.98, 77.70], "Rajkot": [22.30, 70.80], "Kalyan-Dombivli": [19.23, 73.12],
+    "Vasai-Virar": [19.39, 72.83], "Varanasi": [25.31, 82.97], "Srinagar": [34.08, 74.79],
+    "Aurangabad": [19.87, 75.34], "Dhanbad": [23.79, 86.43], "Amritsar": [31.63, 74.87],
+    "Navi Mumbai": [19.03, 73.02], "Allahabad": [25.43, 81.84], "Ranchi": [23.34, 85.30],
+    "Howrah": [22.59, 88.26], "Coimbatore": [11.01, 76.95], "Jabalpur": [23.18, 79.98],
+    "Gwalior": [26.21, 78.17], "Vijayawada": [16.50, 80.64], "Jodhpur": [26.23, 73.02],
+    "Madurai": [9.92, 78.11], "Raipur": [21.25, 81.62], "Kota": [25.21, 75.86],
+    "Guwahati": [26.14, 91.73], "Solapur": [17.65, 75.90], "Hubli-Dharwad": [15.36, 75.12],
+    "Bareilly": [28.36, 79.43], "Mysore": [12.29, 76.63], "Tiruchirappalli": [10.79, 78.70],
     "Gurgaon": [28.45, 77.02]
 };
 
@@ -46,7 +46,10 @@ function showPage(pageId, el) {
     document.getElementById(pageId).classList.add('active');
     el.classList.add('active');
     if(pageId === 'page-home') setTimeout(() => map.invalidateSize(), 200);
-    if(pageId === 'page-analytics') initCharts();
+    if(pageId === 'page-analytics') {
+        // Charts are initialized fresh or updated when state is selected
+        // Do NOT call initCharts() with dummy data here anymore
+    }
 }
 
 // ---------------- 3. MAP ----------------
@@ -146,7 +149,7 @@ const zonalRescueData = [
 
 const allStateContacts = [
     ["Andhra Pradesh", "08645-246600", "https://apsdma.ap.gov.in"], ["Arunachal Pradesh", "0360-2290346", "https://sdma-arunachal.in"],
-    ["Assam", "0361-2237219", "https://asdma.assam.gov.in"], ["Bihar", "0612-2294204", "https://disastermgmt.bihar.gov.in"],
+    ["Assam", "0361-2237219", "https://asdma.assam.gov.in"], ["Bihar", "0612-2294204", "http://www.bsdma.org/"],
     ["Chhattisgarh", "0771-2223471", "https://revenue.cg.nic.in/CGSDMA/"], ["Goa", "0832-2419550", "https://sdma.goa.gov.in"],
     ["Gujarat", "079-23251900", "https://gsdma.org"], ["Haryana", "0172-2545938", "https://revenueharyana.gov.in/disaster-management/"],
     ["Himachal Pradesh", "0177-2628940", "https://hpsdma.nic.in"], ["Jharkhand", "0651-2446923", "https://jharkhand.mygov.in/group/department-home-jail-and-disaster-management"],
@@ -165,9 +168,9 @@ const allStateContacts = [
     ["Dadra & Nagar Haveli", "0260-2642106", "https://dnh.nic.in/disaster-management/"],
     ["Delhi (NCT)", "011-23831077", "https://delhi.gov.in/department/ddma"],
     ["Jammu & Kashmir", "0191-2542001", "https://jkeoc.in"],
-    ["Ladakh", "01982-260887", "https://ldma.ladakh.gov.in/"],
+    ["Ladakh", "01982-260887", "https://kargil.nic.in/disaster-management/"],
     ["Lakshadweep", "04896-263100", "https://lakshadweep.gov.in/disaster-management/"],
-    ["Puducherry", "0413-2253407", "https://psdma.py.gov.in/"]
+    ["Puducherry", "0413-2253407", "https://puducherry.gov.in/department/revenue-and-disaster-management/"]
 ];
 
 const disasterArchiveData = [
@@ -270,7 +273,7 @@ function populateUI() {
     // Symmetrical Contact Directory
     const directoryTable = document.getElementById('directory-body');
     if(directoryTable) {
-        directoryTable.innerHTML = ''; 
+        directoryTable.innerHTML = '';
         allStateContacts.forEach(s => {
             directoryTable.innerHTML += `
                 <tr class="contact-row">
@@ -301,9 +304,205 @@ function populateUI() {
         });
     }
 
+    // Populate analytics state dropdown
+    populateAnalyticsDropdown();
+
     fetchLiveWeather();
     if(document.getElementById('weatherSearch')) document.getElementById('weatherSearch').addEventListener('keyup', filterWeatherTable);
     if(document.getElementById('contactSearch')) document.getElementById('contactSearch').addEventListener('keyup', filterContactTable);
+}
+
+// ---------------- 7b. ANALYTICS DROPDOWN POPULATION ----------------
+function populateAnalyticsDropdown() {
+    const sel = document.getElementById('analyticsStateSelect');
+    if (!sel) return;
+    const sortedStates = Object.keys(statesUTs).sort();
+    sortedStates.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        sel.appendChild(opt);
+    });
+}
+
+// ---------------- 7c. ANALYTICS LIVE DATA LOADER ----------------
+// Stores chart instances for destruction on update
+let analyticsCharts = {};
+
+async function loadAnalyticsForState() {
+    const sel = document.getElementById('analyticsStateSelect');
+    const stateName = sel.value;
+    if (!stateName || !statesUTs[stateName]) return;
+
+    const [lat, lon] = statesUTs[stateName];
+    const loadingEl = document.getElementById('analytics-loading');
+    const locationLabel = document.getElementById('analytics-location-label');
+
+    loadingEl.style.display = 'flex';
+    locationLabel.textContent = '';
+
+    try {
+        // Fetch current + hourly (past 6 hours + next 6 hours) from Open-Meteo
+        const now = new Date();
+        const startDate = now.toISOString().slice(0, 10);
+
+        const [wRes, marineRes] = await Promise.all([
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+                `&current=wind_speed_10m,wind_direction_10m,surface_pressure,precipitation,relative_humidity_2m` +
+                `&hourly=wind_speed_10m,surface_pressure,precipitation` +
+                `&forecast_days=1&timezone=Asia%2FKolkata`),
+            fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}` +
+                `&current=wave_height,swell_wave_height` +
+                `&hourly=wave_height,swell_wave_height` +
+                `&forecast_days=1&timezone=Asia%2FKolkata`)
+        ]);
+
+        const wData = await wRes.json();
+        const marineData = await marineRes.json();
+
+        const cur = wData.current;
+        const hourly = wData.hourly;
+
+        // Determine current hour index in hourly arrays
+        const currentHour = now.getHours();
+        const sliceStart = Math.max(0, currentHour - 5);
+        const sliceEnd = Math.min(24, currentHour + 7);
+
+        const timeLabels = hourly.time.slice(sliceStart, sliceEnd).map(t => {
+            const h = new Date(t);
+            return `${h.getHours().toString().padStart(2,'0')}:00`;
+        });
+        const windHourly = hourly.wind_speed_10m.slice(sliceStart, sliceEnd);
+        const pressureHourly = hourly.surface_pressure.slice(sliceStart, sliceEnd);
+        const rainHourly = hourly.precipitation.slice(sliceStart, sliceEnd);
+
+        // Current wind speed (live)
+        const liveWind = cur.wind_speed_10m;
+        const livePressure = cur.surface_pressure;
+
+        // Marine data (wave height as flood depth proxy, swell as storm surge proxy)
+        let liveWaveHeight = 0, liveSurge = 0;
+        let waveHourly = [], surgeHourly = [];
+        if (marineData && marineData.current) {
+            liveWaveHeight = marineData.current.wave_height ?? 0;
+            liveSurge = marineData.current.swell_wave_height ?? 0;
+            waveHourly = (marineData.hourly?.wave_height ?? []).slice(sliceStart, sliceEnd);
+            surgeHourly = (marineData.hourly?.swell_wave_height ?? []).slice(sliceStart, sliceEnd);
+        }
+
+        // River level: derived from precipitation accumulation (proxy: cumulative rain in mm / 10 for meters)
+        const riverProxy = rainHourly.map((v, i) => {
+            const cumulative = rainHourly.slice(0, i + 1).reduce((a, b) => a + b, 0);
+            return parseFloat((cumulative / 10).toFixed(2));
+        });
+        const liveRiverLevel = riverProxy[riverProxy.length - 1] || 0;
+
+        // Flood depth proxy: wave height for coastal states, else precipitation * 0.05
+        const isCoastal = ['Andhra Pradesh','Goa','Gujarat','Karnataka','Kerala','Maharashtra','Odisha','Tamil Nadu','West Bengal','Andaman & Nicobar','Lakshadweep','Puducherry'].includes(stateName);
+        const liveFloodDepth = isCoastal ? liveWaveHeight : parseFloat((cur.precipitation * 0.05).toFixed(2));
+        const floodHourly = isCoastal ? waveHourly : rainHourly.map(v => parseFloat((v * 0.05).toFixed(2)));
+
+        // UPDATE STAT BOXES
+        document.getElementById('stat-wind').textContent = `${liveWind.toFixed(1)} km/h`;
+        document.getElementById('stat-river').textContent = `${liveRiverLevel.toFixed(2)} m`;
+        document.getElementById('stat-flood').textContent = `${liveFloodDepth.toFixed(2)} m`;
+        document.getElementById('stat-pressure').textContent = `${livePressure.toFixed(0)} hPa`;
+        document.getElementById('stat-surge').textContent = `${liveSurge.toFixed(2)} m`;
+
+        locationLabel.textContent = `📡 Live data for: ${stateName} (${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E)`;
+
+        // UPDATE CHARTS
+        destroyAllAnalyticsCharts();
+
+        buildAnalyticsChart('windChart', 'line', timeLabels, 'Wind Speed (km/h)', windHourly, '#fbbf24', 70, 'Cyclone Risk (>70 km/h)');
+        buildAnalyticsChart('riverChart', 'line', timeLabels, 'River Level (m)', riverProxy, '#38bdf8', 0.5, 'Flood Risk (>0.5m)');
+        buildAnalyticsChart('floodChart', 'bar', timeLabels, 'Flood Depth (m)', floodHourly, '#ef4444', 1.0, 'Evacuation Level (1.0m)');
+        buildAnalyticsChart('pressureChart', 'line', timeLabels, 'Pressure (hPa)', pressureHourly, '#10b981', 990, 'Severe Storm (<990 hPa)');
+
+        // Storm surge: show per-zone coastal breakdown or hourly data
+        const surgeLabels = isCoastal
+            ? timeLabels
+            : ['East Coast', 'West Coast', 'Inland'];
+        const surgeData = isCoastal
+            ? surgeHourly
+            : [liveSurge, liveSurge * 0.6, liveSurge * 0.3];
+        buildAnalyticsChart('stormChart', 'bar', surgeLabels, 'Surge Height (m)', surgeData, '#38bdf8', 2.0, 'Coastal Threat (2.0m)');
+
+    } catch (err) {
+        console.error('Analytics fetch error:', err);
+        locationLabel.textContent = '⚠ Could not fetch live data. Check connection.';
+    } finally {
+        loadingEl.style.display = 'none';
+    }
+}
+
+function destroyAllAnalyticsCharts() {
+    ['windChart','riverChart','floodChart','pressureChart','stormChart'].forEach(id => {
+        if (analyticsCharts[id]) {
+            analyticsCharts[id].destroy();
+            delete analyticsCharts[id];
+        }
+    });
+}
+
+function buildAnalyticsChart(id, type, labels, label, data, color, threshold, thresholdText) {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    analyticsCharts[id] = new Chart(canvas, {
+        type: type,
+        data: {
+            labels,
+            datasets: [{
+                label,
+                data,
+                borderColor: color,
+                backgroundColor: type === 'bar'
+                    ? color + '55'
+                    : color + '22',
+                borderWidth: type === 'bar' ? 0 : 2,
+                tension: 0.4,
+                fill: type !== 'bar',
+                pointBackgroundColor: color,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                annotation: {
+                    annotations: {
+                        dangerLine: {
+                            type: 'line',
+                            yMin: threshold,
+                            yMax: threshold,
+                            borderColor: 'rgba(239, 68, 68, 0.8)',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            label: {
+                                display: true,
+                                content: thresholdText,
+                                position: 'start',
+                                backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: '#94a3b8', font: { size: 10 } },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                },
+                y: {
+                    ticks: { color: '#94a3b8', font: { size: 10 } },
+                    grid: { color: 'rgba(255,255,255,0.05)' }
+                }
+            }
+        }
+    });
 }
 
 // ---------------- 8. MODALS & CHARTS (ORIGINAL) ----------------
