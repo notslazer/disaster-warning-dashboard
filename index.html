@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -34,10 +34,16 @@
     <span id="live-clock" style="color:var(--warning); font-family: monospace; font-weight: bold;"></span>
 </header>
 
+<!-- ============================================================ -->
+<!-- HOME PAGE                                                      -->
+<!-- ============================================================ -->
 <div id="page-home" class="page active">
     <div class="panel">
-        <h3>Threat Watch</h3>
-        <div id="state-list" style="overflow-y: auto; flex: 1;"></div>
+        <h3>
+            Threat Watch — All India
+            <span id="home-scan-status" style="float:right; font-size:0.7rem; color:#94a3b8; font-weight:normal; letter-spacing:0; text-transform:none;"></span>
+        </h3>
+        <div id="state-list" class="scrollable-watch-panel" style="flex: 1;"></div>
     </div>
 
     <div class="panel" style="padding:0">
@@ -46,10 +52,13 @@
 
     <div class="panel">
         <h3>Live Intelligence Feed</h3>
-        <div id="incident-feed" style="overflow-y: auto;"></div>
+        <div id="incident-feed" class="scrollable-watch-panel"></div>
     </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- WEATHER PAGE                                                   -->
+<!-- ============================================================ -->
 <div id="page-weather" class="page">
     <div class="panel">
         <h3>National Meteorological Forecast</h3>
@@ -65,9 +74,9 @@
                 <tr>
                     <th>State/UT</th>
                     <th>Temp (°C)</th>
-                    <th>Rain %</th>
+                    <th>Rain (mm/hr)</th>
                     <th>Wind Speed</th>
-                    <th>Wind Pattern</th>
+                    <th>Wind Dir</th>
                     <th>Humidity</th>
                     <th>Visibility</th>
                     <th>AQI</th>
@@ -78,6 +87,9 @@
     </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- ANALYTICS PAGE                                                 -->
+<!-- ============================================================ -->
 <div id="page-analytics" class="page">
 
     <!-- State Selector -->
@@ -128,43 +140,53 @@
         </div>
     </div>
 
+    <!-- Row 1: Wind + River -->
     <div class="chart-container"><h3>Wind Speed Trend</h3><canvas id="windChart"></canvas></div>
     <div class="chart-container"><h3>River Level Monitoring</h3><canvas id="riverChart"></canvas></div>
+
+    <!-- Row 2: Flood + Pressure -->
     <div class="chart-container"><h3>Flood Depth Trend</h3><canvas id="floodChart"></canvas></div>
     <div class="chart-container"><h3>Pressure Variation</h3><canvas id="pressureChart"></canvas></div>
+
+    <!-- Row 3: Storm Surge full width -->
     <div class="chart-container" style="grid-column: span 2;"><h3>Storm Surge (Coastal Analysis)</h3><canvas id="stormChart"></canvas></div>
+
+    <!-- Row 4: Precipitation + Soil Moisture -->
+    <div class="chart-container"><h3>Precipitation Rate (mm/hr)</h3><canvas id="precipChart"></canvas></div>
+    <div class="chart-container"><h3>Soil Saturation (%)</h3><canvas id="soilChart"></canvas></div>
+
+    <!-- Row 5: Wave Height + Cyclone Index -->
+    <div class="chart-container"><h3>Significant Wave Height (m)</h3><canvas id="waveChart"></canvas></div>
+    <div class="chart-container"><h3>Cyclone Intensity Index (0–100)</h3><canvas id="cycloneChart"></canvas></div>
+
+    <!-- Row 6: Tsunami Risk full width -->
+    <div class="chart-container" style="grid-column: span 2;"><h3>Tsunami / Coastal Risk Index</h3><canvas id="tsunamiChart"></canvas></div>
 </div>
 
+<!-- ============================================================ -->
+<!-- RESCUE OPS PAGE                                                -->
+<!-- ============================================================ -->
 <div id="page-rescue" class="page">
     <div class="panel">
         <h3><i class="fa-solid fa-map-location-dot"></i> Zonal Rescue Intelligence Matrix</h3>
         <table class="dir-table">
             <thead>
                 <tr>
-                    <th>Zone (India)</th>
-                    <th>Active Teams (NDRF)</th>
-                    <th>Evacuated (72h)</th>
-                    <th>Relief Camps</th>
-                    <th>Boats + Helis</th>
-                    <th>Risk Status</th>
+                    <th>State/Union Territory (India)</th>
+                    <th>Teams</th>
+                    <th>Evacuated</th>
+                    <th>Camps</th>
+                    <th>Assets</th>
                 </tr>
             </thead>
             <tbody id="rescue-zonal-body"></tbody>
         </table>
     </div>
-
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-        <div class="panel">
-            <h3>Active Supply Drops</h3>
-            <div id="supply-feed"></div>
-        </div>
-        <div class="panel">
-            <h3>Field Comms Status</h3>
-            <div id="comms-status"></div>
-        </div>
-    </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- CONTACT DIRECTORY PAGE                                         -->
+<!-- ============================================================ -->
 <div id="page-directory" class="page">
     <div class="panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -181,20 +203,24 @@
                     <th class="text-right">Official Portal</th>
                 </tr>
             </thead>
-            <tbody id="directory-body">
-                </tbody>
+            <tbody id="directory-body"></tbody>
         </table>
     </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- DISASTER ARCHIVES PAGE                                         -->
+<!-- ============================================================ -->
 <div id="page-history" class="page"></div>
 
+<!-- ============================================================ -->
+<!-- AWARENESS PAGE                                                 -->
+<!-- ============================================================ -->
 <div id="page-awareness" class="page">
 
     <div class="awareness-card">
         <i class="fa-solid fa-house-flood-water"></i>
         <h4>Flood Safety</h4>
-
         <div class="awareness-section">
             <h5>Before</h5>
             <ul>
@@ -206,7 +232,6 @@
                 <li>Keep drinking water stored safely.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>During</h5>
             <ul>
@@ -217,7 +242,6 @@
                 <li>Keep children and elderly safe indoors.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>After</h5>
             <ul>
@@ -233,7 +257,6 @@
     <div class="awareness-card">
         <i class="fa-solid fa-wind"></i>
         <h4>Cyclone Safety</h4>
-
         <div class="awareness-section">
             <h5>Before</h5>
             <ul>
@@ -245,7 +268,6 @@
                 <li>Prepare livestock shelters.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>During</h5>
             <ul>
@@ -256,7 +278,6 @@
                 <li>Keep emergency numbers accessible.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>After</h5>
             <ul>
@@ -272,7 +293,6 @@
     <div class="awareness-card">
         <i class="fa-solid fa-water"></i>
         <h4>Tsunami Safety</h4>
-
         <div class="awareness-section">
             <h5>Before</h5>
             <ul>
@@ -282,7 +302,6 @@
                 <li>Keep emergency footwear ready.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>During</h5>
             <ul>
@@ -292,12 +311,11 @@
                 <li>Climb to higher floors if necessary.</li>
             </ul>
         </div>
-
         <div class="awareness-section">
             <h5>After</h5>
             <ul>
                 <li>Stay away from the coast until officials say it is safe.</li>
-                <li>A tsunami is a series of waves.</li>
+                <li>A tsunami is a series of waves — wait for all clear.</li>
                 <li>Use SMS instead of calls to reduce congestion.</li>
                 <li>Check for injuries and provide first aid.</li>
             </ul>
@@ -306,23 +324,22 @@
 
 </div>
 
+<!-- ============================================================ -->
+<!-- DISASTER DETAIL MODAL                                          -->
+<!-- ============================================================ -->
 <div id="disaster-modal" class="modal-overlay">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <h2 id="modal-title" style="color: white; margin-bottom: 5px;"></h2>
         <span id="modal-year" class="year-pill" style="display: inline-block; margin-bottom: 15px;"></span>
         <p id="modal-desc" style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px;"></p>
-        
         <h4 style="color: var(--accent); margin-bottom: 15px; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">Recorded Meteorological Data</h4>
-        <div id="modal-stats" class="modal-stats-grid">
-            </div>
+        <div id="modal-stats" class="modal-stats-grid"></div>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="script.js"></script>
-
-
 
 </body>
 </html>

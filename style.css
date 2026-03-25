@@ -51,7 +51,7 @@ header {
 
 /* HOME PAGE GRID */
 #page-home { grid-template-columns: 320px 1fr 350px; }
-#map { height: 100%; width: 100%; border-radius: 12px; border: 1px solid var(--border); }
+#map {height: 100%; width: 100%; border-radius: 12px; border: 1px solid var(--border); }
 .custom-warning-icon { background: transparent !important; border: none !important; }
 
 /* SCROLLBAR STYLING */
@@ -159,4 +159,88 @@ header {
     font-weight: bold; display: inline-block;
     transition: 0.3s;
 }
-.portal-btn:hover { background: hsw(198 22% 3%); transform: scale(1.05); }
+.portal-btn:hover { background: #0ea5e9; transform: scale(1.05); }
+
+/* RESCUE PAGE GRID */
+#page-rescue { grid-template-columns: 1fr 1fr; }
+#page-rescue > .panel:first-child { grid-column: span 2; }
+
+/* NDRF LIVE FEED CARDS */
+.ndrf-item {
+    background: rgba(255,255,255,0.04);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+.ndrf-item:hover { background: rgba(56,189,248,0.08); }
+.ndrf-item-meta { font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display:flex; justify-content:space-between; }
+.ndrf-item-text { font-size: 0.82rem; color: #e2e8f0; line-height: 1.5; }
+.ndrf-item-tag { display:inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.68rem; font-weight: 700; margin-left: 6px; }
+.tag-active { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+.tag-standby { background: rgba(251,191,36,0.15); color: var(--warning); border: 1px solid rgba(251,191,36,0.3); }
+.tag-drill { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
+.tag-relief { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+
+#refresh-ndrf-btn:hover { background: rgba(56,189,248,0.3) !important; }
+
+#analyticsStateSelect {
+    background: #1e293b !important;
+    color: #f1f5f9 !important;
+    border: 1.5px solid var(--accent) !important;
+    padding: 10px 18px !important;
+    border-radius: 10px !important;
+    font-size: 0.9rem !important;
+    outline: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    appearance: auto;
+}
+#analyticsStateSelect option {
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 8px;
+}
+#analyticsStateSelect:focus { border-color: #7dd3fc !important; box-shadow: 0 0 0 3px rgba(56,189,248,0.2); }
+
+/* EXTRA CHART ROWS — support 3-col grid for new charts */
+#page-analytics { grid-template-columns: 1fr 1fr; }
+.chart-full { grid-column: span 2; height: 320px; }
+.chart-triple-row { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.chart-triple-row .chart-container { grid-column: span 1; }
+
+/* Container for the scrollable alerts */
+.scrollable-watch-panel {
+    max-height: 620px; /* Larger default height for desktop */
+    height: 600px; /* Responsive height for varying screen sizes */
+    overflow-y: auto;
+    padding-right: 8px; /* Space for scrollbar */
+}
+
+@media (max-width: 1100px) {
+    .scrollable-watch-panel {
+        max-height: 44vh;
+        height: 44vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-watch-panel {
+        max-height: 38vh;
+        height: 38vh;
+    }
+}
+
+/* Custom Scrollbar Styling (Dark Theme) */
+.scrollable-watch-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.scrollable-watch-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+.scrollable-watch-panel::-webkit-scrollbar-thumb {
+    background: var(--accent); /* Uses your dashboard accent color */
+    border-radius: 10px;
+}
