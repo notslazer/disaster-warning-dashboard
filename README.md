@@ -67,6 +67,10 @@ Provides safety guidelines and preparedness tips for different types of disaster
 
 No additional installation or build steps are required as this is a static web application.
 
+## Live Deployment
+
+- **Live Demo**: [Click Here](https://disaster-warning-dashboard.vercel.app/) 
+
 ## Disclaimer
 
 This project was created as part of a college assignment for educational purposes only. It is not intended for production use or as a substitute for official disaster management systems. Always refer to official government sources for real disaster information and emergency response.
