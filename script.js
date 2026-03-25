@@ -102,7 +102,7 @@ const map = L.map('map', {
     maxBounds: indiaBounds,
     maxBoundsViscosity: 1.0,
     minZoom: 4
-}).setView([20.5937, 78.9629], 5);
+}).setView([22.5, 78.9629], 5); 
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO'
@@ -117,8 +117,9 @@ function rebuildMapMarkers(threatResults) {
     dynamicAlertMarkers.forEach(m => map.removeLayer(m));
     dynamicAlertMarkers = [];
 
+    // show markers for CRITICAL, HIGH, and MEDIUM threats
     threatResults.forEach(r => {
-        if (r.alertLevel === 'NORMAL' || r.alertLevel === 'NO DATA') return;
+        if (r.alertLevel !== 'CRITICAL' && r.alertLevel !== 'HIGH' && r.alertLevel !== 'MEDIUM') return;
 
         const coords = statesUTs[r.stateName];
         if (!coords) return;
@@ -597,8 +598,8 @@ function populateUI() {
 //   • Query ALL 36 states/UTs from Open-Meteo in controlled batches
 //   • Each state gets: wind, gusts, precipitation, pressure, humidity,
 //     daily precip sum (for accumulated rain), wind_gusts_10m
-//   • Threat scoring engine assigns CRITICAL / HIGH / ELEVATED / NORMAL
-//   • ONLY states with ELEVATED or above are shown in the Threat Watch panel
+//   • Threat scoring engine assigns CRITICAL / HIGH / MEDIUM / NORMAL
+//   • ONLY states with MEDIUM or above are shown in the Threat Watch panel
 //   • Map markers are rebuilt dynamically based on scan results
 //   • Intelligence Feed shows alerts sorted by severity
 // ================================================================
@@ -643,11 +644,11 @@ async function fetchHomeLiveData() {
     renderThreatWatch(threatResults, stateListEl);
     renderIntelligenceFeed(threatResults, feedEl);
 
-    const alertCount = threatResults.filter(r => r.alertLevel !== 'NORMAL' && r.alertLevel !== 'NO DATA').length;
+    const alertCount = threatResults.filter(r => r.alertLevel === 'CRITICAL').length;
     if (statusEl) {
         const timeStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-        statusEl.textContent = `${alertCount} alerts · Updated ${timeStr}`;
-        statusEl.style.color = alertCount > 0 ? 'var(--warning)' : 'var(--success)';
+        statusEl.textContent = `${alertCount} critical alert${alertCount === 1 ? '' : 's'} · Updated ${timeStr}`;
+        statusEl.style.color = alertCount > 0 ? 'var(--danger)' : 'var(--success)';
     }
 
     // Auto-refresh every 10 minutes
@@ -725,53 +726,53 @@ function computeThreatScore(
     // ---- WIND ----
     // IMD classifications: Cyclonic Storm ≥63, SCS ≥89, VSCS ≥118 km/h
     if (maxWind >= 118) {
-        score += 50; threatFlags.push('Very Severe Cyclonic Storm');
+        score += 65; threatFlags.push('Very Severe Cyclonic Storm');
         feedAlerts.push({ icon: '🌀', label: 'VSCS WARNING', msg: `Max wind ${maxWind.toFixed(0)} km/h — Very Severe Cyclonic Storm conditions. Immediate evacuation required.` });
     } else if (maxWind >= 89) {
-        score += 38; threatFlags.push('Severe Cyclonic Storm');
+        score += 50; threatFlags.push('Severe Cyclonic Storm');
         feedAlerts.push({ icon: '🌀', label: 'CYCLONE WARNING', msg: `Max wind ${maxWind.toFixed(0)} km/h — Severe Cyclonic Storm conditions. Coastal evacuation underway.` });
     } else if (maxWind >= 63) {
-        score += 28; threatFlags.push('Cyclonic Storm');
+        score += 36; threatFlags.push('Cyclonic Storm');
         feedAlerts.push({ icon: '🌀', label: 'CYCLONE WATCH', msg: `Max wind ${maxWind.toFixed(0)} km/h — Cyclonic Storm-force. Secure assets, avoid sea.` });
     } else if (maxWind >= 54) {
-        score += 18; threatFlags.push('Strong Gale Force');
+        score += 24; threatFlags.push('Strong Gale Force');
         feedAlerts.push({ icon: '💨', label: 'GALE FORCE WIND', msg: `Max wind ${maxWind.toFixed(0)} km/h — Strong gale. Structural damage risk.` });
     } else if (maxWind >= 40) {
-        score += 10; threatFlags.push('Strong Winds');
-        feedAlerts.push({ icon: '💨', label: 'WIND ADVISORY', msg: `Wind ${wind.toFixed(0)} km/h (max ${maxWind.toFixed(0)} km/h) — Elevated conditions.` });
+        score += 12; threatFlags.push('Strong Winds');
+        feedAlerts.push({ icon: '💨', label: 'WIND ADVISORY', msg: `Wind ${wind.toFixed(0)} km/h (max ${maxWind.toFixed(0)} km/h) — Medium conditions.` });
     }
 
     // ---- GUSTS ----
-    if (maxGust >= 120) { score += 15; feedAlerts.push({ icon: '⚡', label: 'EXTREME GUSTS', msg: `Gusts reaching ${maxGust.toFixed(0)} km/h — Major infrastructure threat.` }); }
-    else if (maxGust >= 80) { score += 8; feedAlerts.push({ icon: '⚡', label: 'GUST WARNING', msg: `Gusts ${maxGust.toFixed(0)} km/h — Dangerous for outdoor activity.` }); }
+    if (maxGust >= 50) { score += 15; feedAlerts.push({ icon: '⚡', label: 'EXTREME GUSTS', msg: `Gusts reaching ${maxGust.toFixed(0)} km/h — Major infrastructure threat.` }); }
+    else if (maxGust >= 30) { score += 8; feedAlerts.push({ icon: '⚡', label: 'GUST WARNING', msg: `Gusts ${maxGust.toFixed(0)} km/h — Dangerous for outdoor activity.` }); }
 
     // ---- PRESSURE ---- (IMD: Depression ≤1000, DD ≤996, CS ≤989, SCS ≤979 hPa)
-    if (pressure <= 979) {
-        score += 32; threatFlags.push('Severe Low — Cyclone Potential');
+    if (pressure <= 909) {
+        score += 45; threatFlags.push('Severe Low — Cyclone Potential');
         feedAlerts.push({ icon: '📉', label: 'SEVERE DEPRESSION', msg: `Pressure ${pressure.toFixed(0)} hPa — Cyclogenesis conditions. Deep system.` });
-    } else if (pressure <= 989) {
-        score += 22; threatFlags.push('Cyclonic Storm Pressure');
+    } else if (pressure <= 939) {
+        score += 32; threatFlags.push('Cyclonic Storm Pressure');
         feedAlerts.push({ icon: '📉', label: 'INTENSE LOW PRESSURE', msg: `Pressure ${pressure.toFixed(0)} hPa — Well-marked system forming.` });
     } else if (pressure <= 996) {
-        score += 14; threatFlags.push('Deep Depression');
+        score += 21; threatFlags.push('Deep Depression');
         feedAlerts.push({ icon: '📉', label: 'DEEP DEPRESSION', msg: `Pressure ${pressure.toFixed(0)} hPa — Depression over region. Intensification likely.` });
     } else if (pressure <= 1002) {
-        score += 6; threatFlags.push('Low Pressure System');
+        score += 9; threatFlags.push('Low Pressure System');
     }
 
     // ---- RAINFALL ----
     // IMD: Heavy ≥7 mm/hr or ≥64.5/day, VH ≥115/day, Extremely Heavy ≥204.4/day
     if (todayRain >= 204) {
-        score += 40; threatFlags.push('Extremely Heavy Rainfall');
+        score += 55; threatFlags.push('Extremely Heavy Rainfall');
         feedAlerts.push({ icon: '🌧️', label: 'EXTREME RAIN RED ALERT', msg: `${todayRain.toFixed(0)} mm today — Extremely Heavy Rain. Flash flood threat imminent.` });
     } else if (todayRain >= 115) {
-        score += 30; threatFlags.push('Very Heavy Rainfall');
+        score += 40; threatFlags.push('Very Heavy Rainfall');
         feedAlerts.push({ icon: '🌧️', label: 'VERY HEAVY RAIN ALERT', msg: `${todayRain.toFixed(0)} mm today — Very Heavy Rain. River levels rising critically.` });
     } else if (todayRain >= 64) {
-        score += 18; threatFlags.push('Heavy Rainfall');
+        score += 28; threatFlags.push('Heavy Rainfall');
         feedAlerts.push({ icon: '🌧️', label: 'HEAVY RAIN WARNING', msg: `${todayRain.toFixed(0)} mm today — Heavy Rain. Monitor low-lying areas.` });
     } else if (todayRain >= 15) {
-        score += 8;
+        score += 14;
         feedAlerts.push({ icon: '🌦️', label: 'SIGNIFICANT RAIN', msg: `${todayRain.toFixed(0)} mm today — Moderate-heavy rainfall ongoing.` });
     }
 
@@ -797,14 +798,14 @@ function computeThreatScore(
         score += 6; // rain showers
     }
 
-    // ---- DETERMINE ALERT LEVEL ----
+    // ---- DETERMINE ALERT LEVEL (strict, very severe only) ----
     let alertLevel, alertColor, alertBg;
-    if (score >= 55) {
-        alertLevel = 'CRITICAL'; alertColor = 'var(--danger)'; alertBg = 'rgba(239,68,68,0.12)';
-    } else if (score >= 30) {
-        alertLevel = 'HIGH'; alertColor = 'var(--warning)'; alertBg = 'rgba(251,191,36,0.08)';
-    } else if (score >= 12) {
-        alertLevel = 'ELEVATED'; alertColor = '#a78bfa'; alertBg = 'rgba(167,139,250,0.08)';
+    if (score >= 75) {
+        alertLevel = 'CRITICAL'; alertColor = 'var(--danger)'; alertBg = 'rgba(239,68,68,0.22)';
+    } else if (score >= 50) {
+        alertLevel = 'HIGH'; alertColor = 'var(--warning)'; alertBg = 'rgba(251,191,36,0.12)';
+    } else if (score >= 40) {
+        alertLevel = 'MEDIUM'; alertColor = '#a78bfa'; alertBg = 'rgba(167,139,250,0.08)';
     } else {
         alertLevel = 'NORMAL'; alertColor = 'var(--success)'; alertBg = 'transparent';
     }
@@ -824,7 +825,8 @@ function computeThreatScore(
 function renderThreatWatch(results, container) {
     container.innerHTML = '';
 
-    const alertResults = results.filter(r => r.alertLevel !== 'NORMAL' && r.alertLevel !== 'NO DATA');
+    // show only very severe risk (CRITICAL) states on Home Threat Watch
+    const alertResults = results.filter(r => r.alertLevel === 'CRITICAL');
 
     if (alertResults.length === 0) {
         container.innerHTML = `
@@ -916,21 +918,6 @@ function renderIntelligenceFeed(results, container) {
                 </div>`;
         });
     }
-
-    // Persistent operational notices
-    container.innerHTML += `
-        <div class="state-card" style="border-left-color:#475569; margin-bottom:8px; padding:10px 14px; opacity:0.8;">
-            <div style="font-size:0.68rem; color:#94a3b8; margin-bottom:3px; text-transform:uppercase;">NDRF HQ</div>
-            <div style="font-size:0.8rem; color:#e2e8f0;">🚁 Rapid response teams on 30-min standby across East and West Coast districts.</div>
-        </div>
-        <div class="state-card" style="border-left-color:#475569; margin-bottom:8px; padding:10px 14px; opacity:0.8;">
-            <div style="font-size:0.68rem; color:#94a3b8; margin-bottom:3px; text-transform:uppercase;">IMD BULLETIN</div>
-            <div style="font-size:0.8rem; color:#e2e8f0;">🌊 Bay of Bengal SSTs being monitored — cyclogenesis tracked by IMD satellite network.</div>
-        </div>
-        <div class="state-card" style="border-left-color:#475569; padding:10px 14px; opacity:0.8;">
-            <div style="font-size:0.68rem; color:#94a3b8; margin-bottom:3px; text-transform:uppercase;">DATA SOURCE</div>
-            <div style="font-size:0.8rem; color:#e2e8f0;">📡 Real-time data: Open-Meteo (WMO-member NWPs) · Air Quality: Open-Meteo AQI · Auto-refresh: 10 min</div>
-        </div>`;
 }
 
 // ---- RENDER INTELLIGENCE FEED ----
@@ -1107,7 +1094,7 @@ function buildRiverLevelCurve(rainArr, sm0, sm1, sm3, stateName) {
         : 0.25;
 
     // ADJUSTMENT: Lower the baseflow constant so rivers start at a realistic level (2.0m - 5.0m)
-    const baseflow = Math.max(1.0, avgSM3 * mult * 3.5);
+    const baseflow = Math.max(1.0, avgSM3 * mult * 3.5); 
 
     const lagHours = 3;
     const decayFactor = 0.85; // Slightly slower decay for large rivers like Ganges
@@ -1125,9 +1112,9 @@ function buildRiverLevelCurve(rainArr, sm0, sm1, sm3, stateName) {
         // Runoff contribution
         const contrib = Math.min(effectiveRain * 0.08 * mult, maxRunoffContrib);
         carryOver = Math.max(0, (carryOver + contrib) * decayFactor);
-       
+        
         // Ensure the result doesn't just stay a flat line by adding a small random oscillation
-        const variance = (Math.random() * 0.05);
+        const variance = (Math.random() * 0.05); 
         levels.push(parseFloat((baseflow + carryOver + variance).toFixed(2)));
     }
     return levels;
@@ -1150,12 +1137,13 @@ function buildFloodDepthCurve(rainArr, sm0, sm1, isCoastal) {
 
 // ---- STORM SURGE MODEL ----
 // ---- CALIBRATED STORM SURGE MODEL ----
+// ---- CALIBRATED STORM SURGE MODEL ----
 function computeStormSurge(stateName, isCoastal, windArr, pressureArr, liveWind, livePressure) {
     if (isCoastal) {
         // Corrected Formula: surge ≈ 0.00045 * U² * sqrt(ΔP)
         // Baseline: Start at 0.5m (average high-tide/MSL) to avoid constant danger alerts
-        const k = 0.00045;
-        const seaLevelBaseline = 0.5;
+        const k = 0.00045; 
+        const seaLevelBaseline = 0.5; 
 
         const calcSurge = (wspd, press) => {
             const U = (wspd || 0) / 3.6; // convert to m/s
