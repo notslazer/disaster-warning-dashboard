@@ -84,3 +84,5 @@ This project was created as part of a college assignment for educational purpose
 - [Font Awesome](https://fontawesome.com/)
 - [Google Fonts](https://fonts.google.com/)
 - [CartoDB Basemaps](https://carto.com/basemaps/) for map tiles
+
+  Star this repo if you found it helpful smile
