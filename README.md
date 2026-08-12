@@ -60,12 +60,17 @@ Provides safety guidelines and preparedness tips for different types of disaster
 - Internet connection for API data fetching and map tiles
 
 ### Installation and Setup
-1. Clone or download this repository to your local machine.
-2. Navigate to the project directory.
-3. Open `index.html` in your web browser.
-4. The dashboard will automatically load and start fetching real-time data.
+1. Fork the repository.
+2. Clone the repository to your local machine.
+3. Navigate to the project directory.
+4. Open `index.html` in your web browser.
+5. The dashboard will automatically load and start fetching real-time data.
 
 No additional installation or build steps are required as this is a static web application.
+
+## Live Deployment
+
+- **Live Demo**: [Click Here](https://disaster-warning-dashboard.vercel.app/) 
 
 ## Disclaimer
 
@@ -79,3 +84,5 @@ This project was created as part of a college assignment for educational purpose
 - [Font Awesome](https://fontawesome.com/)
 - [Google Fonts](https://fonts.google.com/)
 - [CartoDB Basemaps](https://carto.com/basemaps/) for map tiles
+
+  Star this repo if you found it helpful smile
