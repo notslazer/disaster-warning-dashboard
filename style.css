@@ -51,7 +51,7 @@ header {
 
 /* HOME PAGE GRID */
 #page-home { grid-template-columns: 320px 1fr 350px; }
-#map { height: 100%; width: 100%; border-radius: 12px; border: 1px solid var(--border); }
+#map {height: 100%; width: 100%; border-radius: 12px; border: 1px solid var(--border); }
 .custom-warning-icon { background: transparent !important; border: none !important; }
 
 /* SCROLLBAR STYLING */
@@ -212,9 +212,24 @@ header {
 
 /* Container for the scrollable alerts */
 .scrollable-watch-panel {
-    max-height: 450px; /* Adjust this to match your map's height */
+    max-height: 620px; /* Larger default height for desktop */
+    height: 600px; /* Responsive height for varying screen sizes */
     overflow-y: auto;
     padding-right: 8px; /* Space for scrollbar */
+}
+
+@media (max-width: 1100px) {
+    .scrollable-watch-panel {
+        max-height: 44vh;
+        height: 44vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-watch-panel {
+        max-height: 38vh;
+        height: 38vh;
+    }
 }
 
 /* Custom Scrollbar Styling (Dark Theme) */
